@@ -1,6 +1,6 @@
 import qbs
 Project {
-  name: "MyFirstLinuxProject"
+  name: "mdr32f9q2-template"
   property string stdPerLibPath: "/lib/mdr32f9q2-std-per-lib/"
   property string startupPath: stdPerLibPath + "CMSIS/CM3/DeviceSupport/MDR32F9Qx/startup/"
   property string perfLibsSrcPath: stdPerLibPath + "MDR32F9Qx_StdPeriph_Driver/src/"
