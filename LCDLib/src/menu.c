@@ -37,6 +37,13 @@ static void UpFunc(void);
 static void DownFunc(void);
 static void ReturnFunc(void);
 
+static u32 MenuItemIndex = 0, nMenuLevel = 0;
+//static u32 ItemNumb[MAX_MENU_LEVELS];
+
+static tMenuItem psMenuItem, psCurrentMenuItem;
+static tMenu psPrevMenu[MAX_MENU_LEVELS];
+static tMenu psCurrentMenu;
+
 // ���� ������� �������
 struct sMenuItem TextMenuItems[] = {{"������", FontFunc, NULL},
                                     {"�����", StyleFunc, NULL},
@@ -68,15 +75,6 @@ struct sMenuItem MainMenuItems[] = {
   {"����������", IdleFunc, &TechnologyMenu},
   {"� ���������", AboutFunc, NULL}};
 struct sMenu MainMenu = {"������� ����", MainMenuItems, countof(MainMenuItems)};
-
-// Diagnostic Menu
-struct sMenuItem DiagnosticMainMenuItems[] = {
-  {"Current Set", IdleFunc, NULL},
-  {"Diagnostic dats", IdleFunc, NULL},
-  {"Server", IdleFunc, NULL},
-  {"End", IdleFunc, NULL}};
-struct sMenu DiagnosticMainMenu = {"Diagnostic", DiagnosticMainMenuItems, countof(MainMenuItems)};
-
 
 // ��������� ������� ��������� ����
 
@@ -196,14 +194,17 @@ void DisplayMenuTitle(const char *ptr)
 
 void Menu_Init(void)
 {
-    /*psCurrentMenu = &MainMenu;
+    psCurrentMenu = &MainMenu;
     psPrevMenu[nMenuLevel] = psCurrentMenu;
     psMenuItem = MainMenuItems;
-    CurrentFont = &Font_6x8;*/
+    CurrentFont = &Font_6x8;
+}
 
-		psCurrentMenu = &DiagnosticMainMenu;
+void CustomMenuInit(struct sMenu *menu, struct sMenuItem *menuItem)
+{
+    psCurrentMenu = menu;
     psPrevMenu[nMenuLevel] = psCurrentMenu;
-    psMenuItem = DiagnosticMainMenuItems;
+    psMenuItem = menuItem;
     CurrentFont = &Font_6x8;
 }
 

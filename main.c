@@ -18,14 +18,7 @@ int main(void) {
   // Инициализация с проверкой результата
   if(init() != END_OK) return END_ERROR;
 
-  // menu_release();
-  
-  LCD_INIT();
-  InitPortLED();
-  InitPortJoystick();
-  Menu_Init();
-  DisplayMenu();
-  ReadKey();
+  diagnostic_start();
 
   return 0;
 }
@@ -37,9 +30,10 @@ int main(void) {
   Содержит функции инициализации и определение успешности инициализации
 */
 END_STATUS init(void) {
+  /// \todo Написать определение успешности инициализации
   delay_init();
   rst_clk_pll_init();
-  // menu_init();
+  diagnostic_init();
 
   return END_OK;
 }

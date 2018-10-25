@@ -7,6 +7,7 @@
   Файл содержит реализации подпрограмм меню диагностического режима
 */
 #include "diagnostic.h"
+#include "1251_diagnostic_text.h"
 
 /*!
   \bref Инициализация меню диагностического режима
@@ -16,16 +17,17 @@
     (вызывать следует при инициализации устройства!)
 */
 END_STATUS diagnostic_init(void) {
+  /// \todo Включать тактирование только для нужныйх здесь устройств
+  MDR_RST_CLK->PER_CLOCK = 0xFFFFFFFF;
 
-  // Инициализируем порт C
-  RST_CLK_PCLKcmd (RST_CLK_PCLK_PORTC, ENABLE);
-  PORT_InitTypeDef GPIOInitStruct;
-  PORT_StructInit(&GPIOInitStruct);
-  GPIOInitStruct.PORT_Pin        = PORT_Pin_0 | PORT_Pin_1;
-  GPIOInitStruct.PORT_OE         = PORT_OE_OUT;
-  GPIOInitStruct.PORT_SPEED      = PORT_SPEED_SLOW;
-  GPIOInitStruct.PORT_MODE       = PORT_MODE_DIGITAL;
-  PORT_Init(MDR_PORTC, &GPIOInitStruct);
+  // Инициализация из библиотеки LCDLib
+  LCD_INIT();
+  InitPortLED();
+  InitPortJoystick();
+
+  // Инициализация меню диагностического режима
+  CustomMenuInit(&DiagnosticMainMenu, DiagnosticMainMenuItems);
+  // Menu_Init();
 
   return END_OK;
 }
@@ -37,10 +39,8 @@ END_STATUS diagnostic_init(void) {
   Содержит выполнение графа состояний меню жиагностического режима
 */
 END_STATUS diagnostic_start(void) {
-  while(1) {
-    MDR_PORTC->RXTX ^= 0b01;
-    delay(1000);
-    MDR_PORTC->RXTX ^= 0b10;
-  }
+  /// \todo Написать возвращение из диагностического режима
+  DisplayMenu();
+  ReadKey();
   return END_OK;
 }

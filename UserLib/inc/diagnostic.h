@@ -15,7 +15,7 @@
 
 #include "defs.h"
 
-END_STATUS menu_init(void);
-END_STATUS menu_release(void);
+END_STATUS diagnostic_init(void);
+END_STATUS diagnostic_start(void);
 
 #endif // DIAGNOSTIC_H
