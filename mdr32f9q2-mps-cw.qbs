@@ -7,6 +7,9 @@ Project {
   property string lnFile: startupPath + "gcc/MDR32F9Qx.ld"
   property string userLibPath: "UserLib/"
   property string userLibPathsSrcPath: userLibPath + "src/"
+  property string lcdLibPath: "LCDLib/"
+  property string lcdLibPathsSrcPath: lcdLibPath + "src/"
+  property string lcdLibPathsFontsPath: lcdLibPath + "fonts/"
   property pathList includePaths: [
     stdPerLibPath,
     stdPerLibPath + "CMSIS/CM3/CoreSupport/",
@@ -15,6 +18,7 @@ Project {
     stdPerLibPath + "Config/",
     stdPerLibPath + "MDR32F9Qx_StdPeriph_Driver/inc/",
     stdPerLibPath + "MDR32F9Qx_StdPeriph_Driver/inc/USB_Library/",
+    lcdLibPath + "inc/",
     userLibPath + "inc/",
     "./"
   ]
@@ -40,7 +44,7 @@ Project {
       name: "user-lib"
       files: [
         project.userLibPathsSrcPath + "delay.c",
-        project.userLibPathsSrcPath + "menu.c"
+        project.userLibPathsSrcPath + "diagnostic.c"
       ]
       fileTags: ['ul']
     }
@@ -52,8 +56,29 @@ Project {
       ]
       fileTags: ['pl']
     }
+    Group {
+      name: "lcd-lib"
+      files: [
+        project.lcdLibPathsSrcPath + "gl.c",
+        project.lcdLibPathsSrcPath + "joystick.c",
+        project.lcdLibPathsSrcPath + "lcd.c",
+        project.lcdLibPathsSrcPath + "leds.c",
+        project.lcdLibPathsSrcPath + "menu_gl.c",
+        project.lcdLibPathsSrcPath + "menu_leds.c",
+        project.lcdLibPathsSrcPath + "menu_technology.c",
+        project.lcdLibPathsSrcPath + "menu_text.c",
+        project.lcdLibPathsSrcPath + "menu.c",
+        project.lcdLibPathsSrcPath + "systick.c",
+        project.lcdLibPathsSrcPath + "text.c",
+        project.lcdLibPathsFontsPath + "font_6x8.c",
+        project.lcdLibPathsFontsPath + "font_7x10_bold.c",
+        project.lcdLibPathsFontsPath + "font_7x10_thin.c",
+        project.lcdLibPathsFontsPath + "font_12x16.c"
+      ]
+      fileTags: ['ll']
+    }
     Rule {
-      inputs: ['s', 'ul', 'sl', 'pl']
+      inputs: ['s', 'ul', 'sl', 'pl', 'll']
       Artifact {
         fileTags: ['obj']
         filePath: input.fileName + '.o'

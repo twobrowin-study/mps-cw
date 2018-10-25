@@ -6,7 +6,7 @@
 
   Файл содержит реализации подпрограмм меню диагностического режима
 */
-#include "menu.h"
+#include "diagnostic.h"
 
 /*!
   \bref Инициализация меню диагностического режима
@@ -15,7 +15,7 @@
   Содержит инизиализацию портов, обеспечивающийх работу меню и очищение экрана
     (вызывать следует при инициализации устройства!)
 */
-END_STATUS menu_init(void) {
+END_STATUS diagnostic_init(void) {
 
   // Инициализируем порт C
   RST_CLK_PCLKcmd (RST_CLK_PCLK_PORTC, ENABLE);
@@ -36,7 +36,7 @@ END_STATUS menu_init(void) {
 
   Содержит выполнение графа состояний меню жиагностического режима
 */
-END_STATUS menu_release(void) {
+END_STATUS diagnostic_start(void) {
   while(1) {
     MDR_PORTC->RXTX ^= 0b01;
     delay(1000);
