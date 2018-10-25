@@ -94,7 +94,8 @@ Project {
         args.push("-Wunused")
         args.push("-DM3")
         args.push("-nostartfiles")
-        args.push("-D__START=main")
+        args.push("-D__START=main") // Указание исполняемую после начала функцию
+        args.push("-D__CMCARM_DEMO__") // Указание для библиотеки LCDLib
         for(i in project.includePaths)
           args.push("-I" + project.includePaths[i])
         args.push("-c")
