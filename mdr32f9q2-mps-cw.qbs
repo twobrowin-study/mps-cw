@@ -44,14 +44,14 @@ Project {
       name: "user-lib"
       files: [
         project.userLibPathsSrcPath + "delay.c",
-        project.userLibPathsSrcPath + "diagnostic.c"
+        project.userLibPathsSrcPath + "diagnostic.c",
+        project.userLibPathsSrcPath + "cp1251_diagnostic_menu.c"
       ]
       fileTags: ['ul']
     }
     Group {
       name: "perf-lib"
       files: [
-        project.perfLibsSrcPath + "MDR32F9Qx_port.c",
         project.perfLibsSrcPath + "MDR32F9Qx_rst_clk.c"
       ]
       fileTags: ['pl']
@@ -67,7 +67,6 @@ Project {
         project.lcdLibPathsSrcPath + "menu_leds.c",
         project.lcdLibPathsSrcPath + "menu_technology.c",
         project.lcdLibPathsSrcPath + "menu_text.c",
-        project.lcdLibPathsSrcPath + "menu.c",
         project.lcdLibPathsSrcPath + "systick.c",
         project.lcdLibPathsSrcPath + "text.c",
         project.lcdLibPathsFontsPath + "font_6x8.c",

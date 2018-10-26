@@ -7,7 +7,7 @@
   Файл содержит реализации подпрограмм меню диагностического режима
 */
 #include "diagnostic.h"
-#include "1251_diagnostic_text.h"
+
 
 /*!
   \bref Инициализация меню диагностического режима
@@ -17,29 +17,27 @@
     (вызывать следует при инициализации устройства!)
 */
 END_STATUS diagnostic_init(void) {
-  /// \todo Включать тактирование только для нужныйх здесь устройств
-  MDR_RST_CLK->PER_CLOCK = 0xFFFFFFFF;
-
-  // Инициализация из библиотеки LCDLib
-  LCD_INIT();
-  InitPortLED();
-  InitPortJoystick();
+  // Включение тактирования необходимых для диагностичекого режима портов
+  RST_CLK_PCLKcmd(RST_CLK_PCLK_PORTA | RST_CLK_PCLK_PORTB | RST_CLK_PCLK_PORTC
+                  | RST_CLK_PCLK_PORTE | RST_CLK_PCLK_PORTF,
+                  ENABLE);
 
   // Инициализация меню диагностического режима
-  CustomMenuInit(&DiagnosticMainMenu, DiagnosticMainMenuItems);
-  // Menu_Init();
+  LCD_INIT();
+  InitPortJoystick();
+  MenuInit();
 
   return END_OK;
 }
+
 
 /*!
   \bref Выполение меню диагностического режима
   \return Статус завершения
 
-  Содержит выполнение графа состояний меню жиагностического режима
+  Содержит выполнение графа состояний меню диагностического режима
 */
 END_STATUS diagnostic_start(void) {
-  /// \todo Написать возвращение из диагностического режима
   DisplayMenu();
   ReadKey();
   return END_OK;

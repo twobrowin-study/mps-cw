@@ -8,6 +8,7 @@
 */
 #include "delay.h"
 
+
 /*!
   \bref Инициализация таймера точной задержки
   \return Статус завершения
@@ -24,6 +25,7 @@ END_STATUS delay_init(void) {
 
   return END_OK;
 }
+
 
 /*!
   \bref Точная задержка

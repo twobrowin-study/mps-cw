@@ -9,12 +9,15 @@
 #ifndef MAIN_H
 #define MAIN_H
 
+
 #include <MDR32F9Qx_config.h>
 #include <system_MDR32F9Qx.h>
+
 
 #include "defs.h"
 #include "diagnostic.h"
 #include "delay.h"
+
 
 END_STATUS init(void);
 END_STATUS rst_clk_pll_init(void);

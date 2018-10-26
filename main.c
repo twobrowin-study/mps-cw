@@ -8,6 +8,7 @@
 */
 #include "main.h"
 
+
 /*!
   \bref Основная программа
   \return 0
@@ -23,6 +24,7 @@ int main(void) {
   return 0;
 }
 
+
 /*!
   \bref Функция инициализации
   \return Статус завершения
@@ -37,6 +39,7 @@ END_STATUS init(void) {
 
   return END_OK;
 }
+
 
 /*!
   \bref Функция инициализации тактирования
