@@ -87,7 +87,7 @@ void Timer2_IRQHandler(void)
     MDR_PORTC->RXTX ^= 2;
     if( PORT_ReadInputDataBit (MDR_PORTC, PORT_Pin_2) == 0 ) {
       diagnostic_release();
-      /// Реинициализация меню диагностического режима после его завершения
+      /// Реинициализация меню диагностического режима после завершения работы в нём
       diagnostic_init();
     }
   }

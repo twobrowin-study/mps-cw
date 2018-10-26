@@ -35,14 +35,15 @@ int main(void) {
   Содержит функции инициализации и определение успешности инициализации
 */
 END_STATUS init(void) {
-  /// \todo Написать определение успешности инициализации
-  delay_init();
-  rst_clk_pll_init();
-  sel_butt_init();
-  diagnostic_init();
-  diagnostic_start_init();
+  // Трюк описания проверки успешности запуска каждого модуля
+  END_STATUS init_status = END_OK;
+  init_status += delay_init();
+  init_status += rst_clk_pll_init();
+  init_status += sel_butt_init();
+  init_status += diagnostic_init();
+  init_status += diagnostic_start_init();
 
-  return END_OK;
+  return init_status;
 }
 
 
