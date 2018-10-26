@@ -26,6 +26,7 @@ END_STATUS diagnostic_init(void) {
   LCD_INIT();
   InitPortJoystick();
   MenuInit();
+  ResetLCD();
 
   return END_OK;
 }
@@ -37,7 +38,7 @@ END_STATUS diagnostic_init(void) {
 
   Содержит выполнение графа состояний меню диагностического режима
 */
-END_STATUS diagnostic_start(void) {
+END_STATUS diagnostic_release(void) {
   DisplayMenu();
   ReadKey();
   return END_OK;

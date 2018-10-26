@@ -45,14 +45,17 @@ Project {
       files: [
         project.userLibPathsSrcPath + "delay.c",
         project.userLibPathsSrcPath + "diagnostic.c",
-        project.userLibPathsSrcPath + "cp1251_diagnostic_menu.c"
+        project.userLibPathsSrcPath + "cp1251_diagnostic_menu.c",
+        project.userLibPathsSrcPath + "diagnostic_start.c"
       ]
       fileTags: ['ul']
     }
     Group {
       name: "perf-lib"
       files: [
-        project.perfLibsSrcPath + "MDR32F9Qx_rst_clk.c"
+        project.perfLibsSrcPath + "MDR32F9Qx_rst_clk.c",
+        project.perfLibsSrcPath + "MDR32F9Qx_port.c",
+        project.perfLibsSrcPath + "MDR32F9Qx_timer.c"
       ]
       fileTags: ['pl']
     }

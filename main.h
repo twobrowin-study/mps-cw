@@ -12,10 +12,13 @@
 
 #include <MDR32F9Qx_config.h>
 #include <system_MDR32F9Qx.h>
+#include <MDR32F9Qx_port.h>
+#include <MDR32F9Qx_rst_clk.h>
 
 
 #include "defs.h"
 #include "diagnostic.h"
+#include "diagnostic_start.h"
 #include "delay.h"
 
 

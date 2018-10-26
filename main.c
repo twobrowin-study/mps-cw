@@ -19,7 +19,10 @@ int main(void) {
   // Инициализация с проверкой результата
   if(init() != END_OK) return END_ERROR;
 
-  diagnostic_start();
+  while(1) {
+      MDR_PORTC->RXTX ^= 1;
+      delay(1000);
+  }
 
   return 0;
 }
@@ -35,7 +38,9 @@ END_STATUS init(void) {
   /// \todo Написать определение успешности инициализации
   delay_init();
   rst_clk_pll_init();
+  sel_butt_init();
   diagnostic_init();
+  diagnostic_start_init();
 
   return END_OK;
 }
@@ -44,6 +49,7 @@ END_STATUS init(void) {
 /*!
   \bref Функция инициализации тактирования
   \return Статус завершения
+  \attention После инициализации частота процессорного ядра составляет 72 МГц
 
   Содержит функции инициализации PLL
 */

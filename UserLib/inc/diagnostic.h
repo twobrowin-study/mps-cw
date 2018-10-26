@@ -11,9 +11,6 @@
 #define DIAGNOSTIC_H
 
 
-#include <stdio.h>
-
-
 #include <MDR32F9Qx_config.h>
 #include <system_MDR32F9Qx.h>
 #include <MDR32F9Qx_rst_clk.h>
@@ -34,7 +31,7 @@
 
 
 END_STATUS diagnostic_init(void);
-END_STATUS diagnostic_start(void);
+END_STATUS diagnostic_release(void);
 
 
 #endif // DIAGNOSTIC_H
