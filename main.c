@@ -37,8 +37,8 @@ int main(void) {
 END_STATUS init(void) {
   // Трюк описания проверки успешности запуска каждого модуля
   END_STATUS init_status = END_OK;
-  init_status += delay_init();
   init_status += rst_clk_pll_init();
+  init_status += delay_init();
   init_status += sel_butt_init();
   init_status += diagnostic_init();
   init_status += diagnostic_start_init();
