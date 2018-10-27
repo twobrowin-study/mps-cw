@@ -10,6 +10,7 @@ Project {
   property string lcdLibPath: "LCDLib/"
   property string lcdLibPathsSrcPath: lcdLibPath + "src/"
   property string lcdLibPathsFontsPath: lcdLibPath + "fonts/"
+  property string sensorsCount: "6"
   property pathList includePaths: [
     stdPerLibPath,
     stdPerLibPath + "CMSIS/CM3/CoreSupport/",
@@ -66,6 +67,7 @@ Project {
         project.lcdLibPathsSrcPath + "joystick.c",
         project.lcdLibPathsSrcPath + "lcd.c",
         project.lcdLibPathsSrcPath + "leds.c",
+        project.lcdLibPathsSrcPath + "menu.c",
         project.lcdLibPathsSrcPath + "menu_gl.c",
         project.lcdLibPathsSrcPath + "menu_leds.c",
         project.lcdLibPathsSrcPath + "menu_technology.c",
@@ -98,6 +100,7 @@ Project {
         args.push("-nostartfiles")
         args.push("-D__START=main") // Указание исполняемую после начала функцию
         args.push("-D__CMCARM_DEMO__") // Указание для библиотеки LCDLib
+        args.push("-DSENSORS_COUNT=" + project.sensorsCount) // Указание количества датчиков в сети
         for(i in project.includePaths)
           args.push("-I" + project.includePaths[i])
         args.push("-c")

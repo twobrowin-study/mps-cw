@@ -10,8 +10,10 @@
 */
 #include "cp1251_diagnostic_menu.h"
 
+
 #include <string.h>
 #include "stddef.h"
+
 
 #include "menu_items.h"
 #include "types.h"
@@ -20,6 +22,7 @@
 #include "text.h"
 #include "joystick.h"
 #include "leds.h"
+
 
 /*!
   \groupdef menu_static (Внутренние функции меню)
@@ -56,10 +59,29 @@ static enum DIAGNOSTIC_STATUS diagnostic_status;
   \bref Описание меню текущих настроек МК
   @{
 */
-struct sMenuItem CurrentSettingsMenuItems[] = {
-  {"Куча штук здесь будет", IdleFunc, NULL},
+struct sMenuItem SensorSettingsMenuItems[] = {
+  #ifdef SENSORS_COUNT
+    #if(SENSORS_COUNT > 0)
+      { "Датчик 1", IdleFunc, NULL },
+    #endif
+    #if(SENSORS_COUNT > 1)
+      { "Датчик 2", IdleFunc, NULL },
+    #endif
+    #if(SENSORS_COUNT > 2)
+      { "Датчик 3", IdleFunc, NULL },
+    #endif
+    #if(SENSORS_COUNT > 3)
+      { "Датчик 4", IdleFunc, NULL },
+    #endif
+    #if(SENSORS_COUNT > 4)
+      { "Датчик 5", IdleFunc, NULL },
+    #endif
+    #if(SENSORS_COUNT > 5)
+      { "Датчик 6", IdleFunc, NULL },
+    #endif
+  #endif
   {"Возврат", ReturnFunc, NULL}};
-struct sMenu CurrentSettingsMenu = {"Текущие настройки МК", CurrentSettingsMenuItems, countof(CurrentSettingsMenuItems)};
+struct sMenu SensorSettingsMenu = {"Выбор датчика", SensorSettingsMenuItems, countof(SensorSettingsMenuItems)};
 /*! }@ */
 
 
@@ -68,7 +90,7 @@ struct sMenu CurrentSettingsMenu = {"Текущие настройки МК", CurrentSettingsMenuI
   @{
 */
 struct sMenuItem DiagnosticMainMenuItems[] = {
-  {"Текущие настройки МК", IdleFunc, &CurrentSettingsMenu},
+  {"Текущие настройки МК", IdleFunc, &SensorSettingsMenu},
   {"Диагностика датчиков", IdleFunc, NULL},
   {"Дигностика сервера", IdleFunc, NULL},
   {"Завершить", StopDiagnosticFunc, NULL}};
