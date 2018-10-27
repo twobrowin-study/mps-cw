@@ -6,11 +6,14 @@ Project {
   property string perfLibsSrcPath: stdPerLibPath + "MDR32F9Qx_StdPeriph_Driver/src/"
   property string lnFile: startupPath + "gcc/MDR32F9Qx.ld"
   property string userLibPath: "UserLib/"
-  property string userLibPathsSrcPath: userLibPath + "src/"
+  property string userLibDiagnosticPath: userLibPath + "Diagnostic/"
+  property string userLibDiagnosticPathSrcPath: userLibDiagnosticPath + "src/"
+  property string userLibPathSrcPath: userLibPath + "src/"
   property string lcdLibPath: "LCDLib/"
   property string lcdLibPathsSrcPath: lcdLibPath + "src/"
   property string lcdLibPathsFontsPath: lcdLibPath + "fonts/"
-  property string sensorsCount: "6"
+  property string sensorsCount: "6" // Количество датчиков в МК-сети
+  property bool diagnostic: true // Включение режима диагностики в сборку
   property pathList includePaths: [
     stdPerLibPath,
     stdPerLibPath + "CMSIS/CM3/CoreSupport/",
@@ -19,8 +22,9 @@ Project {
     stdPerLibPath + "Config/",
     stdPerLibPath + "MDR32F9Qx_StdPeriph_Driver/inc/",
     stdPerLibPath + "MDR32F9Qx_StdPeriph_Driver/inc/USB_Library/",
-    lcdLibPath + "inc/",
     userLibPath + "inc/",
+    userLibDiagnosticPath + "inc/",
+    lcdLibPath + "inc/",
     "./"
   ]
   Product {
@@ -44,12 +48,18 @@ Project {
     Group {
       name: "user-lib"
       files: [
-        project.userLibPathsSrcPath + "delay.c",
-        project.userLibPathsSrcPath + "diagnostic.c",
-        project.userLibPathsSrcPath + "cp1251_diagnostic_menu.c",
-        project.userLibPathsSrcPath + "diagnostic_start.c"
+        project.userLibPathSrcPath + "delay.c"
       ]
       fileTags: ['ul']
+    }
+    Group {
+      name: "user-lib-diagnostic"
+      files: [
+        project.userLibDiagnosticPathSrcPath + "diagnostic.c",
+        project.userLibDiagnosticPathSrcPath + "cp1251_diagnostic_menu.c",
+        project.userLibDiagnosticPathSrcPath + "diagnostic_start.c"
+      ]
+      fileTags: ['uld']
     }
     Group {
       name: "perf-lib"
@@ -82,7 +92,7 @@ Project {
       fileTags: ['ll']
     }
     Rule {
-      inputs: ['s', 'ul', 'sl', 'pl', 'll']
+      inputs: ['s', 'ul', 'uld', 'sl', 'pl', 'll']
       Artifact {
         fileTags: ['obj']
         filePath: input.fileName + '.o'
