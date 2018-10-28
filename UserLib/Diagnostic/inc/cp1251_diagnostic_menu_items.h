@@ -1,0 +1,30 @@
+/*!
+\file
+  \bref Пункты меню диагностического режима
+  \authors Дубровин Егор гр. ИУ6-72, LDM-SYSTEMS (2013 г.)
+  \date Октябрь 2018 года
+  \attention Этот файл написан в кодировке Windows CP1251!
+
+  Файл содержит описания функций, вызываемых для вывода на ЖК дисплей
+    функций диагностического режима
+*/
+#ifndef CP1251_DIAGNOSTIC_MENU_ITEMS_H
+#define CP1251_DIAGNOSTIC_MENU_ITEMS_H
+
+void DiagnoseSettings(void);
+
+#include <string.h>
+#include "stddef.h"
+
+#include "defs.h"
+#include "cp1251_diagnostic_menu.h"
+
+#include "menu_items.h"
+#include "types.h"
+#include "lcd.h"
+#include "gl.h"
+#include "text.h"
+#include "joystick.h"
+#include "leds.h"
+
+#endif // CP1251_DIAGNOSTIC_MENU_ITEMS_H

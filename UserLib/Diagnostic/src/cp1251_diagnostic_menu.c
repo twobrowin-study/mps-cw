@@ -11,19 +11,6 @@
 #include "cp1251_diagnostic_menu.h"
 
 
-#include <string.h>
-#include "stddef.h"
-
-
-#include "menu_items.h"
-#include "types.h"
-#include "lcd.h"
-#include "gl.h"
-#include "text.h"
-#include "joystick.h"
-#include "leds.h"
-
-
 /*!
   \groupdef menu_static (Внутренние функции меню)
 
@@ -59,29 +46,30 @@ static enum DIAGNOSTIC_STATUS diagnostic_status;
   \bref Описание меню текущих настроек МК
   @{
 */
-struct sMenuItem SensorSettingsMenuItems[] = {
+#define SENSOR_ENTRY(n) { "Датчик " #n, IdleFunc, NULL },
+struct sMenuItem SensorChooseMenuItems[] = {
   #ifdef SENSORS_COUNT
     #if(SENSORS_COUNT > 0)
-      { "Датчик 1", IdleFunc, NULL },
+      SENSOR_ENTRY(1)
     #endif
     #if(SENSORS_COUNT > 1)
-      { "Датчик 2", IdleFunc, NULL },
+      SENSOR_ENTRY(2)
     #endif
     #if(SENSORS_COUNT > 2)
-      { "Датчик 3", IdleFunc, NULL },
+      SENSOR_ENTRY(3)
     #endif
     #if(SENSORS_COUNT > 3)
-      { "Датчик 4", IdleFunc, NULL },
+      SENSOR_ENTRY(4)
     #endif
     #if(SENSORS_COUNT > 4)
-      { "Датчик 5", IdleFunc, NULL },
+      SENSOR_ENTRY(5)
     #endif
     #if(SENSORS_COUNT > 5)
-      { "Датчик 6", IdleFunc, NULL },
+      SENSOR_ENTRY(6)
     #endif
   #endif
   {"Возврат", ReturnFunc, NULL}};
-struct sMenu SensorSettingsMenu = {"Выбор датчика", SensorSettingsMenuItems, countof(SensorSettingsMenuItems)};
+struct sMenu SensorChooseMenu = {"Выбор датчика", SensorChooseMenuItems, countof(SensorChooseMenuItems)};
 /*! }@ */
 
 
@@ -90,8 +78,8 @@ struct sMenu SensorSettingsMenu = {"Выбор датчика", SensorSettingsMenuItems, cou
   @{
 */
 struct sMenuItem DiagnosticMainMenuItems[] = {
-  {"Текущие настройки МК", IdleFunc, &SensorSettingsMenu},
-  {"Диагностика датчиков", IdleFunc, NULL},
+  {"Текущие настройки МК", DiagnoseSettings, NULL},
+  {"Диагностика датчиков", IdleFunc, &SensorChooseMenu},
   {"Дигностика сервера", IdleFunc, NULL},
   {"Завершить", StopDiagnosticFunc, NULL}};
 struct sMenu DiagnosticMainMenu = {"Диагностический режим", DiagnosticMainMenuItems, countof(DiagnosticMainMenuItems)};
@@ -208,6 +196,7 @@ void StopDiagnosticFunc(void) {
 
 /*! }@ */
 
+
 /*!
   \groupdef menu_nonestatic (Интерфейсные функции меню)
 
@@ -240,6 +229,7 @@ void DisplayMenuTitle(const char *ptr) {
     CurrentMethod = MET_OR;
     LCD_Line(0, y, MAX_X, y);
 }
+
 
 /*!
   \bref Вывести меню на дисплей

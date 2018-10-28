@@ -54,6 +54,7 @@ END_STATUS diagnostic_start_init(void) {
   return END_OK;
 }
 
+
 /*!
   \bref Функция инициализации кнопки "Выбор"
   \return Статус завершения
@@ -72,6 +73,7 @@ END_STATUS sel_butt_init(void) {
 
   return END_OK;
 }
+
 
 /*!
   \bref Обработчик прерывания таймера 2

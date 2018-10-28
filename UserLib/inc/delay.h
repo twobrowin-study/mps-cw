@@ -10,16 +10,12 @@
 #ifndef DELAY_H
 #define DELAY_H
 
-
 #include <MDR32F9Qx_config.h>
 #include <system_MDR32F9Qx.h>
 
-
 #include "defs.h"
-
 
 END_STATUS delay_init(void);
 END_STATUS delay(uint ms);
-
 
 #endif // DELAY_H

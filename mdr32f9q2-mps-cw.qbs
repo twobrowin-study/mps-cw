@@ -12,7 +12,7 @@ Project {
   property string lcdLibPath: "LCDLib/"
   property string lcdLibPathsSrcPath: lcdLibPath + "src/"
   property string lcdLibPathsFontsPath: lcdLibPath + "fonts/"
-  property string sensorsCount: "6" // Количество датчиков в МК-сети
+  property string sensorsCount: "4" // Количество датчиков в МК-сети
   property bool diagnostic: true // Включение режима диагностики в сборку
   property pathList includePaths: [
     stdPerLibPath,
@@ -57,6 +57,7 @@ Project {
       files: [
         project.userLibDiagnosticPathSrcPath + "diagnostic.c",
         project.userLibDiagnosticPathSrcPath + "cp1251_diagnostic_menu.c",
+        project.userLibDiagnosticPathSrcPath + "cp1251_diagnostic_menu_items.c",
         project.userLibDiagnosticPathSrcPath + "diagnostic_start.c"
       ]
       fileTags: ['uld']
@@ -84,10 +85,7 @@ Project {
         project.lcdLibPathsSrcPath + "menu_text.c",
         project.lcdLibPathsSrcPath + "systick.c",
         project.lcdLibPathsSrcPath + "text.c",
-        project.lcdLibPathsFontsPath + "font_6x8.c",
-        project.lcdLibPathsFontsPath + "font_7x10_bold.c",
-        project.lcdLibPathsFontsPath + "font_7x10_thin.c",
-        project.lcdLibPathsFontsPath + "font_12x16.c"
+        project.lcdLibPathsFontsPath + "font_6x8.c"
       ]
       fileTags: ['ll']
     }
