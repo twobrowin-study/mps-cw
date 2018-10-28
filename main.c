@@ -21,6 +21,7 @@ int main(void) {
   // Инициализация с проверкой результата
   if(init() != END_OK) return END_ERROR;
 
+  /* Бесконечный цикл */
   while(1) {
       MDR_PORTC->RXTX ^= 1;
       delay(1000);
@@ -37,7 +38,7 @@ int main(void) {
   Содержит функции инициализации и определение успешности инициализации
 */
 END_STATUS init(void) {
-  // Трюк описания проверки успешности запуска каждого модуля
+  /* Трюк описания проверки успешности запуска каждого модуля */
   END_STATUS init_status = END_OK;
   init_status += rst_clk_pll_init();
   init_status += delay_init();

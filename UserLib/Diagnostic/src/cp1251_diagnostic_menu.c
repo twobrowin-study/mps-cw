@@ -68,7 +68,9 @@ struct sMenuItem SensorChooseMenuItems[] = {
     #endif
   #endif
   {"Возврат", ReturnFunc, NULL}};
-struct sMenu SensorChooseMenu = {"Выбор датчика", SensorChooseMenuItems, countof(SensorChooseMenuItems)};
+struct sMenu SensorChooseMenu = {"Выбор датчика",
+                                  SensorChooseMenuItems,
+                                  countof(SensorChooseMenuItems)};
 /*! }@ */
 
 
@@ -81,7 +83,9 @@ struct sMenuItem DiagnosticMainMenuItems[] = {
   {"Диагностика датчиков", IdleFunc, &SensorChooseMenu},
   {"Дигностика сервера", IdleFunc, NULL},
   {"Завершить", StopDiagnosticFunc, NULL}};
-struct sMenu DiagnosticMainMenu = {"Диагностический режим", DiagnosticMainMenuItems, countof(DiagnosticMainMenuItems)};
+struct sMenu DiagnosticMainMenu = {"Диагностический режим",
+                                    DiagnosticMainMenuItems,
+                                    countof(DiagnosticMainMenuItems)};
 /*! }@ */
 
 
@@ -117,7 +121,8 @@ void UpFunc(void) {
     // Отображение текущего пункта меню как невыбранного
     psMenuItem = &psCurrentMenu->psItems[MenuItemIndex];
     CurrentMethod = MET_AND;
-    DisplayMenuItemString((MenuItemIndex * (CurrentFont->Height + 2) + CurrentFont->Height + 4), psMenuItem->psTitle);
+    DisplayMenuItemString((MenuItemIndex * (CurrentFont->Height + 2) + CurrentFont->Height + 4),
+                          psMenuItem->psTitle);
 
     // Определение нового пункта меню (по циклу)
     if(MenuItemIndex > 0)
@@ -129,7 +134,9 @@ void UpFunc(void) {
     // Отображение нового пункта меню как выбранного
     psMenuItem = &psCurrentMenu->psItems[MenuItemIndex];
     CurrentMethod = MET_NOT_XOR;
-    LCD_PUTS(0, (MenuItemIndex * (CurrentFont->Height + 2) + CurrentFont->Height + 4), "                                        ");
+    LCD_PUTS(0,
+            (MenuItemIndex * (CurrentFont->Height + 2) + CurrentFont->Height + 4),
+            "                                        ");
 }
 
 
@@ -141,7 +148,8 @@ void DownFunc(void) {
     psMenuItem = &psCurrentMenu->psItems[MenuItemIndex];
     CurrentMethod = MET_AND;
 
-    DisplayMenuItemString((MenuItemIndex * (CurrentFont->Height + 2) + CurrentFont->Height + 4), psMenuItem->psTitle);
+    DisplayMenuItemString((MenuItemIndex * (CurrentFont->Height + 2) + CurrentFont->Height + 4),
+                          psMenuItem->psTitle);
 
     // Определение нового пункта меню (по циклу)
     if(MenuItemIndex >= ((psCurrentMenu->nItems)-1))
@@ -152,7 +160,9 @@ void DownFunc(void) {
 
     // Отображение нового пункта меню как выбранного
     CurrentMethod = MET_NOT_XOR;
-    LCD_PUTS(0, (MenuItemIndex * (CurrentFont->Height + 2) + CurrentFont->Height + 4), "                                        ");
+    LCD_PUTS(0,
+            (MenuItemIndex * (CurrentFont->Height + 2) + CurrentFont->Height + 4),
+            "                                        ");
 }
 
 
@@ -280,7 +290,7 @@ void DisplayMenu(void) {
 
     // Отображаем заголовок меню
     DisplayMenuTitle(psCurrentMenu->psTitle);
-  // Отображаем пункты меню
+    // Отображаем пункты меню
     for (index = 0, y = CurrentFont->Height + 4;
                 index < psCurrentMenu->nItems;
                 index++, y += CurrentFont->Height + 2) {
@@ -291,7 +301,9 @@ void DisplayMenu(void) {
     // Определяем текущий пункт
     psMenuItem = &(psCurrentMenu->psItems[MenuItemIndex]);
     CurrentMethod = MET_NOT_XOR;
-    LCD_PUTS(0, (MenuItemIndex * (CurrentFont->Height + 2) + CurrentFont->Height + 4), "                                        ");
+    LCD_PUTS(0,
+            (MenuItemIndex * (CurrentFont->Height + 2) + CurrentFont->Height + 4),
+            "                                        ");
 }
 
 
