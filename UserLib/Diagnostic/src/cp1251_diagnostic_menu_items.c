@@ -16,22 +16,21 @@
   Для выхода в меню следует нажать кнопку "Выбор"
 */
 void DiagnoseSettings(void) {
-
-  /// Выводим заглавие
+  /* Выводим заглавие */
   LCD_CLS();
   CurrentMethod = MET_AND;
   DisplayMenuTitle("Шрифты дофига");
   WAIT_UNTIL_KEY_RELEASED(SEL);
 
-  // Шрифты
-  LCD_PUTS(0, 12, "Шрифт 6X8");
+  /* Вывод на экран всех настроек построчно */
+  // Строка Текущее время
+  uint y = CurrentFont->Height + 4;
+  DisplayMenuItemStringPrefix(y, "Время : ", time_as_string(current_time % day_proportion));
 
-  LCD_PUTS(0, 22, "Шрифт 12X16");
+  //  Время начала интервала
+  y += CurrentFont->Height + 2;
+  DisplayMenuItemIntPrefix(y, "Время : ", current_time % day_proportion, 10);
 
-  LCD_PUTS(0, 40, "Шрифт 7X10");
-
-  LCD_PUTS(0, 52, "Шрифт 7X10 утолщёный");
-
-  // Возвражение в меню по нажатию кнопки "Выбор"
+  /* Возвращение в меню по нажатию кнопки "Выбор" */
   BackToMenuOnSel();
 }

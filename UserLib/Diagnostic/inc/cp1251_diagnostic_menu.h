@@ -16,6 +16,7 @@
 #include "cp1251_diagnostic_menu_items.h"
 
 #include <string.h>
+#include <stdio.h>
 #include "stddef.h"
 
 #include "menu_items.h"
@@ -52,6 +53,12 @@ struct sMenu
 
 void MenuInit(void);
 void DisplayMenuTitle(const char *ptr);
+
+void DisplayMenuItemString(u32 y, const char *ptr);
+void DisplayMenuItemStringPrefix(u32 y, const char *prefix, const char *ptr);
+void DisplayMenuItemInt(u32 y, uint val, uint scal);
+void DisplayMenuItemIntPrefix(u32 y, const char *prefix, uint val, uint scal);
+
 void DisplayMenu(void);
 void BackToMenuOnSel(void);
 void ReadKey(void);

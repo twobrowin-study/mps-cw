@@ -17,6 +17,7 @@ void DiagnoseSettings(void);
 #include "stddef.h"
 
 #include "defs.h"
+#include "time.h"
 #include "cp1251_diagnostic_menu.h"
 
 #include "menu_items.h"

@@ -41,6 +41,7 @@ END_STATUS init(void) {
   END_STATUS init_status = END_OK;
   init_status += rst_clk_pll_init();
   init_status += delay_init();
+  init_status += time_init();
   init_status += sel_butt_init();
   init_status += diagnostic_init();
   init_status += diagnostic_start_init();

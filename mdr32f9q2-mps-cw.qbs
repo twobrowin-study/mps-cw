@@ -48,7 +48,8 @@ Project {
     Group {
       name: "user-lib"
       files: [
-        project.userLibPathSrcPath + "delay.c"
+        project.userLibPathSrcPath + "delay.c",
+        project.userLibPathSrcPath + "time.c"
       ]
       fileTags: ['ul']
     }
@@ -67,7 +68,8 @@ Project {
       files: [
         project.perfLibsSrcPath + "MDR32F9Qx_rst_clk.c",
         project.perfLibsSrcPath + "MDR32F9Qx_port.c",
-        project.perfLibsSrcPath + "MDR32F9Qx_timer.c"
+        project.perfLibsSrcPath + "MDR32F9Qx_timer.c",
+        project.perfLibsSrcPath + "MDR32F9Qx_bkp.c"
       ]
       fileTags: ['pl']
     }

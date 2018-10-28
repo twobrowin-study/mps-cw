@@ -20,7 +20,6 @@
   \bref Процедуры работы с меню
   @{
 */
-static void DisplayMenuItemString(u32 y, const char *ptr);
 static void IdleFunc(void);
 static void SelFunc(void);
 static void UpFunc(void);
@@ -84,18 +83,6 @@ struct sMenuItem DiagnosticMainMenuItems[] = {
   {"Завершить", StopDiagnosticFunc, NULL}};
 struct sMenu DiagnosticMainMenu = {"Диагностический режим", DiagnosticMainMenuItems, countof(DiagnosticMainMenuItems)};
 /*! }@ */
-
-
-/*!
-  \bref Вывести строку на дисплей
-*/
-void DisplayMenuItemString(u32 y, const char *ptr) {
-    u32 x;
-
-    LCD_PUTS(0, y, "                                        ");
-    x = (MAX_X - (CurrentFont->Width * strlen(ptr))) / 2;
-    LCD_PUTS(x, y, ptr);
-}
 
 
 /*!
@@ -228,6 +215,56 @@ void DisplayMenuTitle(const char *ptr) {
     y = CurrentFont->Height + 1;
     CurrentMethod = MET_OR;
     LCD_Line(0, y, MAX_X, y);
+}
+
+
+/*!
+  \bref Вывести строку на дисплей
+*/
+void DisplayMenuItemString(u32 y, const char *ptr) {
+    u32 x;
+
+    LCD_PUTS(0, y, "                                        ");
+    x = (MAX_X - (CurrentFont->Width * strlen(ptr))) / 2;
+    LCD_PUTS(x, y, ptr);
+}
+
+
+/*!
+  \bref Вывести строку на дисплей с префиксом описания
+*/
+void DisplayMenuItemStringPrefix(u32 y, const char *prefix, const char *ptr) {
+    u32 x;
+    char buf[22] = "";
+
+    strcat(buf, prefix);
+    strcat(buf, ptr);
+
+    buf[21] = '\0';
+
+    LCD_PUTS(0, y, "                                        ");
+    x = (MAX_X - (CurrentFont->Width * strlen(buf))) / 2;
+    LCD_PUTS(x, y, buf);
+}
+
+
+/*!
+  \bref Вывести целое число на дисплей
+*/
+void DisplayMenuItemInt(u32 y, uint val, uint scal) {
+    char buffer_s[21];
+    itoa(val, buffer_s, scal);
+    DisplayMenuItemString(y, buffer_s);
+}
+
+
+/*!
+  \bref Вывести целое число на дисплей с префиксом
+*/
+void DisplayMenuItemIntPrefix(u32 y, const char *prefix, uint val, uint scal) {
+    char buffer_s[21] = "\0";
+    itoa(val, buffer_s, scal);
+    DisplayMenuItemStringPrefix(y, prefix, buffer_s);
 }
 
 
