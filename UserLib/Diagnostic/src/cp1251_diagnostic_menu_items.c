@@ -19,7 +19,7 @@ void DiagnoseSettings(void) {
   /* Выводим заглавие */
   LCD_CLS();
   CurrentMethod = MET_AND;
-  DisplayMenuTitle("Шрифты дофига");
+  DisplayMenuTitle("Текущие настройки МК");
   WAIT_UNTIL_KEY_RELEASED(SEL);
 
   /* Вывод на экран всех настроек построчно */
@@ -29,7 +29,11 @@ void DiagnoseSettings(void) {
 
   //  Время начала интервала
   y += CurrentFont->Height + 2;
-  DisplayMenuItemIntPrefix(y, "Время : ", current_time % day_proportion, 10);
+  DisplayMenuItemStringPrefix(y, "Начало в : ", time_as_string(interval_start));
+
+  //  Время конца интервала
+  y += CurrentFont->Height + 2;
+  DisplayMenuItemStringPrefix(y, "Конец  в : ", time_as_string(interval_end));
 
   /* Возвращение в меню по нажатию кнопки "Выбор" */
   BackToMenuOnSel();
