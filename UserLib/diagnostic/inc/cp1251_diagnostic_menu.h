@@ -7,7 +7,7 @@
 
   Файл содержит описания подключения к меню диангностического режима и
     связи с библиотекой LCDLib
-*/
+ */
 #ifndef CP1251_DIAGNOSTIC_MENU_H
 #define CP1251_DIAGNOSTIC_MENU_H
 

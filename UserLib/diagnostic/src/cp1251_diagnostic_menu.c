@@ -7,7 +7,7 @@
 
   Файл содержит меню диагностического режима и тексты процедур его работы.
     Файл написан на основе библиотки LCDLib
-*/
+ */
 #include "cp1251_diagnostic_menu.h"
 
 
@@ -15,11 +15,11 @@
   \groupdef menu_static (Внутренние функции меню)
 
   @{
-*/
+ */
 /*!
   \bref Процедуры работы с меню
   @{
-*/
+ */
 static void IdleFunc(void);
 static void SelFunc(void);
 static void UpFunc(void);
@@ -32,7 +32,7 @@ static void StopDiagnosticFunc(void);
 /*!
   \bref Переменные для работы меню
   @{
-*/
+ */
 static u32 MenuItemIndex = 0, nMenuLevel = 0;
 static tMenuItem psMenuItem, psCurrentMenuItem;
 static tMenu psPrevMenu[MAX_MENU_LEVELS];
@@ -44,7 +44,7 @@ static enum DIAGNOSTIC_STATUS diagnostic_status;
 /*!
   \bref Описание меню текущих настроек МК
   @{
-*/
+ */
 #define SENSOR_ENTRY(n) { "Датчик " #n, IdleFunc, NULL },
 struct sMenuItem SensorChooseMenuItems[] = {
   #ifdef SENSORS_COUNT
@@ -77,7 +77,7 @@ struct sMenu SensorChooseMenu = {"Выбор датчика",
 /*!
   \bref Главное меню диагностического режма
   @{
-*/
+ */
 struct sMenuItem DiagnosticMainMenuItems[] = {
   {"Текущие настройки МК", DiagnoseSettings, NULL},
   {"Диагностика датчиков", IdleFunc, &SensorChooseMenu},
@@ -91,13 +91,13 @@ struct sMenu DiagnosticMainMenu = {"Диагностический режим",
 
 /*!
   \bref Пустая функция
-*/
+ */
 void IdleFunc(void) { }
 
 
 /*!
   \bref Переход на подменю и/или вызов соответствующего обработчика
-*/
+ */
 void SelFunc(void) {
     psCurrentMenuItem = psMenuItem;
 
@@ -116,7 +116,7 @@ void SelFunc(void) {
 
 /*!
   \bref Переход на один пункт вверх
-*/
+ */
 void UpFunc(void) {
     // Отображение текущего пункта меню как невыбранного
     psMenuItem = &psCurrentMenu->psItems[MenuItemIndex];
@@ -142,7 +142,7 @@ void UpFunc(void) {
 
 /*!
   \bref Переход на один пункт вниз
-*/
+ */
 void DownFunc(void) {
     // Отображение текущего пункта меню как невыбранного
     psMenuItem = &psCurrentMenu->psItems[MenuItemIndex];
@@ -168,7 +168,7 @@ void DownFunc(void) {
 
 /*!
   \bref Возврат в главное меню
-*/
+ */
 void ReturnFunc(void) {
     if(nMenuLevel == 0)
         nMenuLevel++;
@@ -184,7 +184,7 @@ void ReturnFunc(void) {
 
 /*!
   \bref Звершить режим дигностики
-*/
+ */
 void StopDiagnosticFunc(void) {
   diagnostic_status = DIGANOSTIC_STOP;
   ResetLCD();
@@ -198,10 +198,10 @@ void StopDiagnosticFunc(void) {
   \groupdef menu_nonestatic (Интерфейсные функции меню)
 
   @{
-*/
+ */
 /*!
 \bref Инициализация меню
-*/
+ */
 void MenuInit(void) {
   diagnostic_status = DIGANOSTIC_ON;
   MenuItemIndex = 0;
@@ -215,7 +215,7 @@ void MenuInit(void) {
 
 /*!
   \bref Вывести название меню
-*/
+ */
 void DisplayMenuTitle(const char *ptr) {
     u32 x, y;
 
@@ -230,7 +230,7 @@ void DisplayMenuTitle(const char *ptr) {
 
 /*!
   \bref Вывести строку на дисплей
-*/
+ */
 void DisplayMenuItemString(u32 y, const char *ptr) {
     u32 x;
 
@@ -242,7 +242,7 @@ void DisplayMenuItemString(u32 y, const char *ptr) {
 
 /*!
   \bref Вывести строку на дисплей с префиксом описания
-*/
+ */
 void DisplayMenuItemStringPrefix(u32 y, const char *prefix, const char *ptr) {
     u32 x;
     char buf[22] = "";
@@ -260,7 +260,7 @@ void DisplayMenuItemStringPrefix(u32 y, const char *prefix, const char *ptr) {
 
 /*!
   \bref Вывести целое число на дисплей
-*/
+ */
 void DisplayMenuItemInt(u32 y, uint val, uint scal) {
     char buffer_s[21];
     itoa(val, buffer_s, scal);
@@ -270,7 +270,7 @@ void DisplayMenuItemInt(u32 y, uint val, uint scal) {
 
 /*!
   \bref Вывести целое число на дисплей с префиксом
-*/
+ */
 void DisplayMenuItemIntPrefix(u32 y, const char *prefix, uint val, uint scal) {
     char buffer_s[21] = "\0";
     itoa(val, buffer_s, scal);
@@ -280,7 +280,7 @@ void DisplayMenuItemIntPrefix(u32 y, const char *prefix, uint val, uint scal) {
 
 /*!
   \bref Вывести меню на дисплей
-*/
+ */
 void DisplayMenu(void) {
     u32 y, index;
     tMenuItem psMenuItem2;
@@ -309,7 +309,7 @@ void DisplayMenu(void) {
 
 /*!
   \bref Ожидание нежатия кнопки "Выбор" и возврат в меню выше
-*/
+ */
 void BackToMenuOnSel(void) {
   WAIT_UNTIL_KEY_PRESSED(SEL);
   DisplayMenu();
@@ -318,7 +318,7 @@ void BackToMenuOnSel(void) {
 
 /*!
   \bref Функция-диспетчер нажатых кнопок
-*/
+ */
 void ReadKey(void) {
     u32 key;
 

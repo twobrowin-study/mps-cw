@@ -8,7 +8,7 @@
     нажатию кнопки "Выбор".
     Здесь инициализируется таймер 2 и во время его прерывания по перполнению
       вызывается диагностическиий режим при нажатой кнопке "Выбор"
-*/
+ */
 #include "diagnostic_start.h"
 
 
@@ -20,7 +20,7 @@
   Содержит инизиализацию таймера 2 и разрешения прерывания для него, обработчик
     которого запускает диагностический режим.
     Настройка осуществляется для вызова обработчика прерывания 20 раз в секунду.
-*/
+ */
 END_STATUS diagnostic_start_init(void) {
   TIMER_CntInitTypeDef timer_struct;
 
@@ -60,7 +60,7 @@ END_STATUS diagnostic_start_init(void) {
   \return Статус завершения
 
   Содержит функции инициализации PC2 для обеспечения прослушивания кнопки "Выбор"
-*/
+ */
 END_STATUS sel_butt_init(void) {
   RST_CLK_PCLKcmd (RST_CLK_PCLK_PORTC, ENABLE);
   PORT_InitTypeDef GPIOInitStruct;
@@ -80,7 +80,7 @@ END_STATUS sel_butt_init(void) {
 
   Содержит проверку на нажатие кнопки "Выбор" и вызов диагностического
     режима при нажатии
-*/
+ */
 void Timer2_IRQHandler(void)
 {
 	if (TIMER_GetITStatus(MDR_TIMER2, TIMER_STATUS_CNT_ARR) == SET)

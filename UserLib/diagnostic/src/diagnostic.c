@@ -5,7 +5,7 @@
   \date Октябрь 2018 года
 
   Файл содержит реализации подпрограмм меню диагностического режима
-*/
+ */
 #include "diagnostic.h"
 
 
@@ -15,7 +15,7 @@
 
   Содержит инизиализацию портов, обеспечивающийх работу меню и очищение экрана
     (вызывать следует при инициализации устройства!)
-*/
+ */
 END_STATUS diagnostic_init(void) {
   // Включение тактирования необходимых для диагностичекого режима портов
   RST_CLK_PCLKcmd(RST_CLK_PCLK_PORTA | RST_CLK_PCLK_PORTB | RST_CLK_PCLK_PORTC
@@ -37,7 +37,7 @@ END_STATUS diagnostic_init(void) {
   \return Статус завершения
 
   Содержит выполнение графа состояний меню диагностического режима
-*/
+ */
 END_STATUS diagnostic_release(void) {
   DisplayMenu();
   ReadKey();

@@ -14,6 +14,8 @@ Project {
   property string userLibPathSrcPath: userLibPath + "src/"
   property string lcdLibPath: "LCDLib/"
   property string lcdLibPathsSrcPath: lcdLibPath + "src/"
+  property string usbLibPath: "USBLib/"
+  property string usbLibPathsSrcPath: usbLibPath + "src/"
   property string lcdLibPathsFontsPath: lcdLibPath + "fonts/"
   property string sensorsCount: "4" // Количество датчиков в МК-сети
   property bool diagnostic: true // Включение режима диагностики в сборку
@@ -24,10 +26,10 @@ Project {
     startupPath,
     stdPerLibPath + "Config/",
     stdPerLibPath + "MDR32F9Qx_StdPeriph_Driver/inc/",
-    stdPerLibPath + "MDR32F9Qx_StdPeriph_Driver/inc/USB_Library/",
     userLibPath + "inc/",
     userLibDiagnosticPath + "inc/",
     lcdLibPath + "inc/",
+    usbLibPath + "inc/",
     "./"
   ]
   Product {
@@ -52,7 +54,8 @@ Project {
       name: "user-lib"
       files: [
         project.userLibPathSrcPath + "delay.c",
-        project.userLibPathSrcPath + "time.c"
+        project.userLibPathSrcPath + "time.c",
+        project.userLibPathSrcPath + "usb.c"
       ]
       fileTags: ['ul']
     }
@@ -72,7 +75,9 @@ Project {
         project.perfLibsSrcPath + "MDR32F9Qx_rst_clk.c",
         project.perfLibsSrcPath + "MDR32F9Qx_port.c",
         project.perfLibsSrcPath + "MDR32F9Qx_timer.c",
-        project.perfLibsSrcPath + "MDR32F9Qx_bkp.c"
+        project.perfLibsSrcPath + "MDR32F9Qx_bkp.c",
+        project.perfLibsSrcPath + "MDR32F9Qx_eeprom.c",
+        project.perfLibsSrcPath + "MDR32F9Qx_power.c"
       ]
       fileTags: ['pl']
     }
@@ -94,8 +99,16 @@ Project {
       ]
       fileTags: ['ll']
     }
+    Group {
+      name: "usb-lib"
+      files: [
+        project.usbLibPathsSrcPath + "mdr_usb_cdc.c",
+        project.usbLibPathsSrcPath + "ring_buffer.c"
+      ]
+      fileTags: ['uul']
+    }
     Rule {
-      inputs: ['s', 'ul', 'uld', 'sl', 'pl', 'll']
+      inputs: ['s', 'ul', 'uld', 'sl', 'pl', 'll', 'uul']
       Artifact {
         fileTags: ['obj']
         filePath: input.fileName + '.o'

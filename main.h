@@ -5,7 +5,7 @@
   \date Октябрь 2018 года
 
   Файл содержит подключение всех небходимых библиотек для работы основного алгоритма
-*/
+ */
 #ifndef MAIN_H
 #define MAIN_H
 
@@ -19,6 +19,7 @@
 #include "diagnostic_start.h"
 #include "delay.h"
 #include "time.h"
+#include "usb.h"
 
 END_STATUS init(void);
 END_STATUS rst_clk_pll_init(void);

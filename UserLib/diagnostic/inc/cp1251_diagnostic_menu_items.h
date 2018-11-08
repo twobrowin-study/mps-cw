@@ -7,7 +7,7 @@
 
   Файл сожержит описание подключаемых библиотек и внешних вызовов пунктов меню
     диагностического режима
-*/
+ */
 #ifndef CP1251_DIAGNOSTIC_MENU_ITEMS_H
 #define CP1251_DIAGNOSTIC_MENU_ITEMS_H
 
