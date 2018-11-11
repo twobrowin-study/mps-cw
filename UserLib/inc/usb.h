@@ -15,7 +15,6 @@
 #include <MDR32F9Qx_rst_clk.h>
 
 #include "mdr_usb_cdc.h"
-#include "ring_buffer.h"
 
 #include "MDR32F9Qx_config.h"
 #include "MDR32F9Qx_rst_clk.h"
@@ -29,6 +28,9 @@
 #include "defs.h"
 
 END_STATUS usb_init(void);
-END_STATUS check_usb(void);
+END_STATUS check_usb_cdc(void);
+char* get_recv_via_usb_cdc(void);
+END_STATUS clean_usb_cdc_recv_buf(void);
+END_STATUS send_via_usb_cdc(const char *str);
 
 #endif // USB_H

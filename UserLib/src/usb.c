@@ -8,74 +8,20 @@
  */
 #include "usb.h"
 
-
-/* Описания для работы USB */
-#define BUFFER_LEN 2048
-static uint8_t usb_buffer[BUFFER_LEN];
-static RING_BUFFER(usb_rb, BUFFER_LEN);
-static uint8_t  writing_to_zero_index;
-static uint8_t  reading_from_zero_index;
-static uint32_t reading_length;
+#include <string.h>
 
 
-/* Статические функции этого файла */
-void mdr_usbclock_configure();
-uint8_t get_write_buf(uint8_t **buf);
-void written_buf(uint32_t size);
-uint8_t get_read_buf(uint8_t **buf, uint32_t *length);
-void readed_buf(uint32_t size);
-void mdr_usb_cdc_on_data_recv(uint8_t data_len);
-void mdr_usb_cdc_on_data_sent();
+/// Буфер входных данных USB CDC
+static uint8_t recv_buf[MDR_USB_CDC_MAX_PACKET_SIZE];
 
 
 /*!
   \bref Инициализация USB
   \return Статус завершения
   
-  Чётотам происходит
-  \todo Описать подпрограмму
+  Оганизация тактирования доп. блоков для работы USB и инициализация USB CDC
  */
 END_STATUS usb_init(void) {
-  mdr_usbclock_configure();
-  mdr_usb_cdc_init();
-
-  return END_OK;
-}
-
-
-/*!
-  \brief      Проверка USB
-
-  \return     Результат завершения функции
-
-  Проверка состояния текущих входных и выходных буферов USB на наличие данных и принятие
-    решения по распределению в соответствие с алгоритмом программы
- */
-END_STATUS check_usb(void) {
-  // while(1) {
-    if(mdr_usb_cdc_is_recv_buf_setted() == MDR_USB_CDC_Fail) {
-      uint8_t *write_buf;
-      if(get_write_buf(&write_buf)) {
-        mdr_usb_cdc_set_recv_buf(write_buf);
-      }
-    }
-
-    if(mdr_usb_cdc_is_sending() == MDR_USB_CDC_Fail) {
-      uint8_t *read_buf;
-      if(get_read_buf(&read_buf, &reading_length)) {
-        mdr_usb_cdc_send(reading_length, read_buf);
-      }
-    }
-  // }
-
-  return END_OK;
-}
-
-
-/*!
-  \brief    Конфигурация тактирования блока USB
- */
-void mdr_usbclock_configure() {
   RST_CLK_PCLKcmd(
     RST_CLK_PCLK_RST_CLK |
     RST_CLK_PCLK_BKP |
@@ -85,128 +31,64 @@ void mdr_usbclock_configure() {
 
   RST_CLK_PCLKcmd(RST_CLK_PCLK_EEPROM, ENABLE);
   EEPROM_SetLatency(EEPROM_Latency_2);
+
+  mdr_usb_cdc_init();
+
+  clean_usb_cdc_recv_buf();
+  check_usb_cdc();
+
+  return END_OK;
 }
 
 
 /*!
-  \brief    Получить статус чтения буфера
+  \brief      Получить актуальную вход USB CDC во внутреннюю переменную
 
-  \param    buf   Буфер записи
+  \return     Статус завершения
 
-  \return   Результат прочтения буфера
+  Это контрольная точка, которая определяет далее работу со входом USB CDC
  */
-uint8_t get_write_buf(uint8_t **buf) {
-  uint8_t res = 0;
-  rb_index write_size, zero_size;
-  rb_get4write(&usb_rb, &write_size, &zero_size);
-
-  if(write_size >= MDR_USB_CDC_MAX_PACKET_SIZE) {
-    writing_to_zero_index = 0;
-    *buf = &usb_buffer[usb_rb.write];
-    res = 1;
-  }
-  else if(zero_size >= MDR_USB_CDC_MAX_PACKET_SIZE) {
-    writing_to_zero_index = 1;
-    *buf = &usb_buffer[0];
-    res = 1;
-  }
-
-  return res;
+END_STATUS check_usb_cdc(void) {
+  if(mdr_usb_cdc_is_recv_buf_setted() == MDR_USB_CDC_Fail)
+    mdr_usb_cdc_set_recv_buf(recv_buf);
+  return END_OK;
 }
 
 
 /*!
-  \brief    Прочтённый буфер
+  \brief      Получить входной буфер USB CDC
 
-  \param[in]  size  Размер
+  \return     Буфер USB CDC как сторка
+
+  Принимаемые данные жёстко ограничиваются в 26 символов согласно протоколу передачи
  */
-void written_buf(uint32_t size) {
-  if(writing_to_zero_index)
-    rb_written(&usb_rb, 0, size);
-  else
-    rb_written(&usb_rb, size, 0);
+char* get_recv_via_usb_cdc(void) {
+  recv_buf[26] = '\0';
+  return (char*) recv_buf;
 }
 
 
 /*!
-  \brief    Получает буфер чтения.
+  \brief      Очистка буфера USB CDC
 
-  \param    buf   Буфер
-  \param    length  Длина
-
-  \return   Статус чтения буфера
+  \return     Статус завершения
  */
-uint8_t get_read_buf(uint8_t **buf, uint32_t *length) {
-  uint8_t res = 0;
-  rb_index read_size, zero_size;
-  rb_get4read(&usb_rb, &read_size, &zero_size);
-
-  if(read_size > 0) {
-    reading_from_zero_index = 0;
-    *buf = &usb_buffer[usb_rb.read];
-    *length = read_size > MDR_USB_CDC_MAX_PACKET_SIZE ?
-      MDR_USB_CDC_MAX_PACKET_SIZE :
-      read_size;
-    res = 1;
-  }
-  else if(zero_size > 0) {
-    reading_from_zero_index = 1;
-    *buf = &usb_buffer[0];
-    *length = zero_size > MDR_USB_CDC_MAX_PACKET_SIZE ?
-      MDR_USB_CDC_MAX_PACKET_SIZE :
-      zero_size;
-    res = 1;
-  }
-
-  return res;
-}
-
-
-
-/*!
-  \brief    Размер прочтённого буфера
-
-  \param[in]  size  Размер
- */
-void readed_buf(uint32_t size) {
-  if(size > 0) {
-    if(reading_from_zero_index)
-      rb_readed(&usb_rb, 0, size);
-    else
-      rb_readed(&usb_rb, size, 0);
-  }
+END_STATUS clean_usb_cdc_recv_buf(void) {
+  recv_buf[0] = '\0';
+  return END_OK;
 }
 
 
 /*!
-  \brief    Вызываемая функция по получению данных
+  \brief      Отправляет через USB CDC
 
-  \param[in]  data_len  Длина данных
+  \param[in]  str   Строка для передачи
 
-  При получении данных по USB CDC и заверешении всех прочих задач вызывается и отправляет данные
+  \return     Результат завершения функции
  */
-void mdr_usb_cdc_on_data_recv(uint8_t data_len) {
-  uint8_t *write_buf;
-  written_buf(data_len);
-  if(get_write_buf(&write_buf)) {
-    mdr_usb_cdc_set_recv_buf_isr(write_buf);
-  }
+END_STATUS send_via_usb_cdc(const char *str) {
+  if(mdr_usb_cdc_is_sending() == MDR_USB_CDC_Fail) 
+    mdr_usb_cdc_send(strlen(str), (uint8_t*) str);
+
+  return END_OK;
 }
-
-
-/*!
-  \brief    Вызываемая функция по выдаче данных
-
-  Если в буфере накопились записи для передачи, вызывается и передаёт их
- */
-void mdr_usb_cdc_on_data_sent() {
-  uint8_t *read_buf;
-  readed_buf(reading_length);
-  if(get_read_buf(&read_buf, &reading_length)) {
-    mdr_usb_cdc_send_isr(reading_length, read_buf);
-  }
-  else {
-    reading_length=0;
-  }
-}
-
