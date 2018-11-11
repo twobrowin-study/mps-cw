@@ -80,9 +80,9 @@ void LCD_CLS(void);
 // Специфические команды управления LCD 
 #define LCD_ON                      WriteLCD_Cmd(0x3F)
 #define LCD_OFF                     WriteLCD_Cmd(0x3E)
-#define LCD_START_LINE(x)           WriteLCD_Cmd(0xC0 | x)
-#define LCD_SET_PAGE(x)             WriteLCD_Cmd(0xB8 | x)
-#define LCD_SET_ADDRESS(x)          WriteLCD_Cmd(0x40 | x)
+#define LCD_START_LINE(x)           WriteLCD_Cmd(0xC0 | (x))
+#define LCD_SET_PAGE(x)             WriteLCD_Cmd(0xB8 | (x))
+#define LCD_SET_ADDRESS(x)          WriteLCD_Cmd(0x40 | (x))
 
 #endif /* __LCD_H */
 

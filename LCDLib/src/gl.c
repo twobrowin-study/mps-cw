@@ -37,6 +37,9 @@ void LCD_PutPixel(u32 x, u32 y) {
     switch (CurrentMethod){
         case MET_OR :   data |= shifted;    break;
         case MET_XOR :  data ^= shifted;    break;
+        case MET_NOT_OR : break;
+        case MET_NOT_XOR : break;
+        case MET_AND  : break;
     }
     LCD_SET_ADDRESS(x);
     WriteLCD_Data(data);

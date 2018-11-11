@@ -66,7 +66,7 @@ void LCD_PUT_BYTE(u8 x, u8 y, u8 data)
                 WriteLCD_Data(tmp_data ^ ((data ^ 0xFF) << shift_num));
                 break;
         case MET_AND:
-                WriteLCD_Data(tmp_data&(0xFF >> shift_num_ex) | (data << shift_num));
+                WriteLCD_Data((tmp_data & (0xFF >> shift_num_ex)) | (data << shift_num));
                 break;
     }
 
@@ -93,7 +93,7 @@ void LCD_PUT_BYTE(u8 x, u8 y, u8 data)
                 WriteLCD_Data(tmp_data ^ ((data ^ 0xFF)>> shift_num_ex));
                 break;
             case MET_AND:
-                WriteLCD_Data(tmp_data & (0xFF << shift_num) | (data >> shift_num_ex));
+                WriteLCD_Data((tmp_data & (0xFF << shift_num)) | (data >> shift_num_ex));
                 break;
         }
     }
