@@ -21,14 +21,17 @@ END_STATUS time_init(void) {
   // Включаем тактирование блока часов реального времни и сохранения состояния
   RST_CLK_PCLKcmd(RST_CLK_PCLK_BKP, ENABLE);
   
-  // Перезпускаем часы реального времени
-  BKP_RTC_Reset(ENABLE);
-  BKP_RTC_Reset(DISABLE);
-  
-  // Устанавливаем инициализованные значения начала и конца суточного интервала
-  BKP_RTC_WaitForUpdate();
-  time_update(0, 0, day_proportion - 1);
-  
+  /* Проверка на необходимость сброса часов реального времени */
+  if (! (MDR_BKP->REG_0F & BKP_REG_0F_RTC_EN)) {
+    // Перезпускаем часы реального времени
+    BKP_RTC_Reset(ENABLE);
+    BKP_RTC_Reset(DISABLE);
+    
+    // Устанавливаем инициализованные значения начала и конца суточного интервала
+    BKP_RTC_WaitForUpdate();
+    time_update(0, 0, day_proportion - 1);
+  }
+
   time_scale();
 
   // Запуск часов реального времени
