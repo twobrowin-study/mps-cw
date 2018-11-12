@@ -55,6 +55,7 @@ Project {
       files: [
         project.userLibPathSrcPath + "delay.c",
         project.userLibPathSrcPath + "time.c",
+        project.userLibPathSrcPath + "time_format.c",
         project.userLibPathSrcPath + "usb.c"
       ]
       fileTags: ['ul']
@@ -87,12 +88,6 @@ Project {
         project.lcdLibPathsSrcPath + "gl.c",
         project.lcdLibPathsSrcPath + "joystick.c",
         project.lcdLibPathsSrcPath + "lcd.c",
-        project.lcdLibPathsSrcPath + "leds.c",
-        project.lcdLibPathsSrcPath + "menu.c",
-        project.lcdLibPathsSrcPath + "menu_gl.c",
-        project.lcdLibPathsSrcPath + "menu_leds.c",
-        project.lcdLibPathsSrcPath + "menu_technology.c",
-        project.lcdLibPathsSrcPath + "menu_text.c",
         project.lcdLibPathsSrcPath + "systick.c",
         project.lcdLibPathsSrcPath + "text.c",
         project.lcdLibPathsFontsPath + "font_6x8.c"
@@ -102,8 +97,7 @@ Project {
     Group {
       name: "usb-lib"
       files: [
-        project.usbLibPathsSrcPath + "mdr_usb_cdc.c",
-        project.usbLibPathsSrcPath + "ring_buffer.c"
+        project.usbLibPathsSrcPath + "mdr_usb_cdc.c"
       ]
       fileTags: ['uul']
     }

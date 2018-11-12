@@ -46,6 +46,8 @@ END_STATUS diagnostic_start_init(void) {
 
   TIMER_CntInit(MDR_TIMER2, &timer_struct);
 
+  /* Установка прерывания таймера 2 */
+  NVIC_SetPriority (TIMER2_IRQn, 15); // Самый низкий приоритет прерывания
   NVIC_EnableIRQ(TIMER2_IRQn);
   TIMER_ITConfig(MDR_TIMER2, TIMER_STATUS_CNT_ARR, ENABLE);
 
@@ -80,6 +82,7 @@ END_STATUS sel_butt_init(void) {
 
   Содержит проверку на нажатие кнопки "Выбор" и вызов диагностического
     режима при нажатии
+  Для работы с USB перед входом в диагностический режим все прерывания разрешеются
  */
 void Timer2_IRQHandler(void)
 {
@@ -88,9 +91,16 @@ void Timer2_IRQHandler(void)
     TIMER_ClearITPendingBit(MDR_TIMER2, TIMER_STATUS_CNT_ARR);
     MDR_PORTC->RXTX ^= 2;
     if( PORT_ReadInputDataBit (MDR_PORTC, PORT_Pin_2) == 0 ) {
+      // Контрольная точка USB и времени до начала диагностики
+      time_controll();
+
       diagnostic_release();
-      /// Реинициализация меню диагностического режима после завершения работы в нём
+      
+      // Реинициализация меню диагностического режима после завершения работы в нём
       diagnostic_init();
+
+      // Контрольная точка USB и времени после окончания диагностики
+      time_controll();
     }
   }
 }

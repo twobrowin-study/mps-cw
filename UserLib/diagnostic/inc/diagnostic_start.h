@@ -20,6 +20,7 @@
 
 #include "defs.h"
 #include "diagnostic.h"
+#include "time.h"
 
 
 END_STATUS diagnostic_start_init(void);

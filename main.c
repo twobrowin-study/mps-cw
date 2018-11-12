@@ -23,10 +23,16 @@ int main(void) {
   // Инициализация с проверкой результата
   if(init() != END_OK) return END_ERROR;
 
+  // Контрольная точка USB и времени
+  // time_controll();
+
   /* Бесконечный цикл */
   while(1) {
-      MDR_PORTC->RXTX ^= 1;
+       // ^= 1;
       delay(1000);
+
+      // Контрольная точка USB и времени
+      MDR_PORTC->RXTX = (MDR_PORTC->RXTX & 0xfffe) | ((time_controll() == END_OK) & 0x1);
   }
 
   return 0;
@@ -42,8 +48,8 @@ int main(void) {
 END_STATUS init(void) {
   /* Трюк описания проверки успешности запуска каждого модуля */
   END_STATUS init_status = END_OK;
-  init_status += time_init();
   init_status += rst_clk_pll_init();
+  init_status += time_init();
   init_status += delay_init();
   init_status += sel_butt_init();
   init_status += diagnostic_init();

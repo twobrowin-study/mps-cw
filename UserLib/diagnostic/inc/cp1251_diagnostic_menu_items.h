@@ -16,7 +16,9 @@
 
 #include "defs.h"
 #include "time.h"
+#include "time_format.h"
 #include "cp1251_diagnostic_menu.h"
+#include "delay.h"
 
 #include "menu_items.h"
 #include "types.h"
@@ -27,5 +29,6 @@
 #include "leds.h"
 
 void DiagnoseSettings(void);
+void DiagnoseServer(void);
 
 #endif // CP1251_DIAGNOSTIC_MENU_ITEMS_H

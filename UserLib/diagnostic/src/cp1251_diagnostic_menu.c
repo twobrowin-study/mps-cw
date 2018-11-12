@@ -81,7 +81,7 @@ struct sMenu SensorChooseMenu = {"Выбор датчика",
 struct sMenuItem DiagnosticMainMenuItems[] = {
   {"Текущие настройки МК", DiagnoseSettings, NULL},
   {"Диагностика датчиков", IdleFunc, &SensorChooseMenu},
-  {"Дигностика сервера", IdleFunc, NULL},
+  {"Дигностика сервера", DiagnoseServer, NULL},
   {"Завершить", StopDiagnosticFunc, NULL}};
 struct sMenu DiagnosticMainMenu = {"Диагностический режим",
                                     DiagnosticMainMenuItems,
