@@ -14,6 +14,7 @@
 /*!
   \bref Инициализация счётчика реального времени
   \return Статус завершения
+  \attention  После прошивки требуется провести сброс МК по питанию без батереи, потом её установить
 
   Содержит инициализацию часов реального времени
  */
@@ -21,12 +22,33 @@ END_STATUS time_init(void) {
   // Включаем тактирование блока часов реального времни и сохранения состояния
   RST_CLK_PCLKcmd(RST_CLK_PCLK_BKP, ENABLE);
   
+  /* Настройки порта E, к которому подключен осцилятор */
+  RST_CLK_PCLKcmd(RST_CLK_PCLK_BKP, ENABLE);
+  MDR_PORTE->OE &=0xFFFF0000;
+  MDR_PORTE->OE |=(0x1+0x4+0x200);
+  MDR_PORTE->FUNC=0;
+  MDR_PORTE->FUNC |=(0x1000+0x4000);
+
+  MDR_PORTE->ANALOG |=0xFFFF;
+  MDR_PORTE->ANALOG &=(0xFFFF-0x40-0x80);
+  MDR_PORTE->PULL =0xFFFF0000;
+  MDR_PORTE->PULL &=(0xFFFFFFFF-0x40-0x80-0x400000-0x800000);
+  MDR_PORTE->PD=0;
+  MDR_PORTE->PWR=0xAAAAAAAA;
+  MDR_PORTE->GFEN |=0xFFFF; 
+
+  // Включаем внешний источник LSE
+  RST_CLK_LSEconfig(RST_CLK_LSE_ON);
+
+  // Выбираем LSE в качестве источника тактирования
+  BKP_RTCclkSource(BKP_RTC_LSEclk);
+
   /* Проверка на необходимость сброса часов реального времени */
   if (! (MDR_BKP->REG_0F & BKP_REG_0F_RTC_EN)) {
     // Перезпускаем часы реального времени
     BKP_RTC_Reset(ENABLE);
     BKP_RTC_Reset(DISABLE);
-    
+
     // Устанавливаем инициализованные значения начала и конца суточного интервала
     BKP_RTC_WaitForUpdate();
     time_update(0, 0, day_proportion - 1);
