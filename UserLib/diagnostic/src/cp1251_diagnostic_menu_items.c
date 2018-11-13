@@ -59,26 +59,36 @@ void DiagnoseServer(void) {
   WAIT_UNTIL_KEY_RELEASED(SEL);
 
   /* Вывод строки о наличии подключения */
-  while (!is_usb_connected());
   uint y = CurrentFont->Height + 4;
-  DisplayMenuItemString(y, "Связь установлена");
+  if (is_usb_connected()) { // Подключение установлено
+    DisplayMenuItemString(y, "Связь установлена");
 
-  /* Вывод строки об отправке сообщения серверу */
-  send_via_usb_cdc(current_settings());
-  y += CurrentFont->Height + 2;
-  DisplayMenuItemString(y, "Пакет отправлен");
+    /* Вывод строки об отправке сообщения серверу */
+    send_via_usb_cdc(current_settings());
+    y += CurrentFont->Height + 2;
+    DisplayMenuItemString(y, "Пакет отправлен");
 
-  /* Вывод строки о получении ответа */
-  while (time_controll() != END_OK)
-    delay(100);
-  y += CurrentFont->Height + 2;
-  DisplayMenuItemString(y, "Пакет принят");
+    /* Вывод строки о получении ответа */
+    uint trys = 100; // Количество попыток получить пакет
+    while ((time_controll() != END_OK) && (trys)) {
+      trys -= 1;
+      delay(10);
+    }
+    y += CurrentFont->Height + 2;
+    if (trys) { // Пакет получен
+      DisplayMenuItemString(y, "Пакет принят");
 
-  /* Вывод сообщения о завершении диагностики */
-  y += CurrentFont->Height + 2;
-  DisplayMenuItemString(y, "Диагностика завершена");
+      /* Вывод сообщения о завершении диагностики */
+      y += CurrentFont->Height + 2;
+      DisplayMenuItemString(y, "Диагностика завершена");
+    }
+    else // Пакет так и не получен
+      DisplayMenuItemString(y, "Пакет не принят");
+  }
+  else // Подключение не установлено
+    DisplayMenuItemString(y, "Связь не установлена");
 
-  // Сообщение для пользователя
+  /* Сообщение для пользователя */
   y += CurrentFont->Height + 2;
   DisplayMenuItemString(y, "Нажмите ВЫБОР");
 
