@@ -45,26 +45,26 @@ static enum DIAGNOSTIC_STATUS diagnostic_status;
   \bref Описание меню текущих настроек МК
   @{
  */
-#define SENSOR_ENTRY(n) { "Датчик " #n, IdleFunc, NULL },
+#define SENSOR_MENU_ENTRY(n) { "Датчик " #n, IdleFunc, NULL },
 struct sMenuItem SensorChooseMenuItems[] = {
   #ifdef SENSORS_COUNT
     #if(SENSORS_COUNT > 0)
-      SENSOR_ENTRY(1)
+      SENSOR_MENU_ENTRY(1)
     #endif
     #if(SENSORS_COUNT > 1)
-      SENSOR_ENTRY(2)
+      SENSOR_MENU_ENTRY(2)
     #endif
     #if(SENSORS_COUNT > 2)
-      SENSOR_ENTRY(3)
+      SENSOR_MENU_ENTRY(3)
     #endif
     #if(SENSORS_COUNT > 3)
-      SENSOR_ENTRY(4)
+      SENSOR_MENU_ENTRY(4)
     #endif
     #if(SENSORS_COUNT > 4)
-      SENSOR_ENTRY(5)
+      SENSOR_MENU_ENTRY(5)
     #endif
     #if(SENSORS_COUNT > 5)
-      SENSOR_ENTRY(6)
+      SENSOR_MENU_ENTRY(6)
     #endif
   #endif
   {"Возврат", ReturnFunc, NULL}};

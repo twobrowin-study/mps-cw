@@ -67,7 +67,7 @@ END_STATUS time_init(void) {
 /*!
   \brief      Установить предделитель таймера
 
-  \return     { description_of_the_return_value }
+  \return    Разультат выполнения
 
   \attention Предполагается, что частота генератора LSE - 32,768 кГц
 
