@@ -20,8 +20,9 @@
 #include "delay.h"
 #include "time.h"
 #include "usb.h"
+#include "can.h"
 
-END_STATUS init(void);
-END_STATUS rst_clk_pll_init(void);
+uint init(void);
+uint rst_clk_pll_init(void);
 
 #endif // MAIN_H

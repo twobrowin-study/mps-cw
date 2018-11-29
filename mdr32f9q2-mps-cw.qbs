@@ -55,8 +55,9 @@ Project {
       files: [
         project.userLibPathSrcPath + "delay.c",
         project.userLibPathSrcPath + "time.c",
-        project.userLibPathSrcPath + "time_format.c",
-        project.userLibPathSrcPath + "usb.c"
+        project.userLibPathSrcPath + "format.c",
+        project.userLibPathSrcPath + "usb.c",
+        project.userLibPathSrcPath + "can.c"
       ]
       fileTags: ['ul']
     }
@@ -77,6 +78,7 @@ Project {
         project.perfLibsSrcPath + "MDR32F9Qx_port.c",
         project.perfLibsSrcPath + "MDR32F9Qx_timer.c",
         project.perfLibsSrcPath + "MDR32F9Qx_bkp.c",
+        project.perfLibsSrcPath + "MDR32F9Qx_can.c",
         project.perfLibsSrcPath + "MDR32F9Qx_eeprom.c",
         project.perfLibsSrcPath + "MDR32F9Qx_power.c"
       ]

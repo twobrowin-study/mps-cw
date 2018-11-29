@@ -42,10 +42,37 @@ static enum DIAGNOSTIC_STATUS diagnostic_status;
 
 
 /*!
+  \bref Включение меню для датчиков
+  @{
+ */
+  #ifdef SENSORS_COUNT
+    #if(SENSORS_COUNT > 0)
+      void SensorMenu1() { SensorMenu(1); }
+    #endif
+    #if(SENSORS_COUNT > 1)
+      void SensorMenu2() { SensorMenu(2); }
+    #endif
+    #if(SENSORS_COUNT > 2)
+      void SensorMenu3() { SensorMenu(3); }
+    #endif
+    #if(SENSORS_COUNT > 3)
+      void SensorMenu4() { SensorMenu(4); }
+    #endif
+    #if(SENSORS_COUNT > 4)
+      void SensorMenu5() { SensorMenu(5); }
+    #endif
+    #if(SENSORS_COUNT > 5)
+      void SensorMenu6() { SensorMenu(6); }
+    #endif
+  #endif
+/*! }@ */
+
+
+/*!
   \bref Описание меню текущих настроек МК
   @{
  */
-#define SENSOR_MENU_ENTRY(n) { "Датчик " #n, IdleFunc, NULL },
+#define SENSOR_MENU_ENTRY(n) { "Датчик " #n, SensorMenu##n, NULL },
 struct sMenuItem SensorChooseMenuItems[] = {
   #ifdef SENSORS_COUNT
     #if(SENSORS_COUNT > 0)
@@ -229,6 +256,24 @@ void DisplayMenuTitle(const char *ptr) {
 
 
 /*!
+  \bref Вывести название меню с числом
+ */
+void DisplayMenuTitleInt(const char *ptr, uint val, uint scal) {
+    char buf[22] = "";
+    char buffer_s[21];
+
+    itoa(val, buffer_s, scal);
+
+    strcat(buf, ptr);
+    strcat(buf, buffer_s);
+
+    buf[21] = '\0';
+
+    DisplayMenuTitle(buf);
+}
+
+
+/*!
   \bref Вывести строку на дисплей
  */
 void DisplayMenuItemString(u32 y, const char *ptr) {
@@ -244,7 +289,6 @@ void DisplayMenuItemString(u32 y, const char *ptr) {
   \bref Вывести строку на дисплей с префиксом описания
  */
 void DisplayMenuItemStringPrefix(u32 y, const char *prefix, const char *ptr) {
-    u32 x;
     char buf[22] = "";
 
     strcat(buf, prefix);
@@ -252,9 +296,7 @@ void DisplayMenuItemStringPrefix(u32 y, const char *prefix, const char *ptr) {
 
     buf[21] = '\0';
 
-    LCD_PUTS(0, y, "                                        ");
-    x = (MAX_X - (CurrentFont->Width * strlen(buf))) / 2;
-    LCD_PUTS(x, y, buf);
+    DisplayMenuItemString(y, buf);
 }
 
 

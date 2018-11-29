@@ -6,13 +6,16 @@
 
   Файл содержит реализацию функций форматизации времени и данных от сервера
  */
-#include "time_format.h"
+#include "format.h"
 
 /// Буфер форматизации времени
-static char time_format_buf[9] = "";
+static char format_buf[9] = "";
 
 /// Буфер форматизации текущих настроек
 static char current_settings_buf[28] = "";
+
+/// Буфер форматизации данных датчика
+static char sensor_format_string_buf [27] = "";
 
 
 /*!
@@ -31,19 +34,19 @@ char* time_as_string(uint time) {
   uint seconds = time % 60;
 
   /* Заполним шаблон */
-  time_format_buf[8] = '\0';
-  time_format_buf[2] = time_format_buf[5] = ':';
+  format_buf[8] = '\0';
+  format_buf[2] = format_buf[5] = ':';
   /* Часы */
-  time_format_buf[0] = (hours / 10) + '0';
-  time_format_buf[1] = hours % 10 + '0';
+  format_buf[0] = (hours / 10) + '0';
+  format_buf[1] = hours % 10 + '0';
   /* Минуты */
-  time_format_buf[3] = (minutes / 10) + '0';
-  time_format_buf[4] = minutes % 10 + '0';
+  format_buf[3] = (minutes / 10) + '0';
+  format_buf[4] = minutes % 10 + '0';
   /* Секунды */
-  time_format_buf[6] = (seconds / 10) + '0';
-  time_format_buf[7] = seconds % 10 + '0';
+  format_buf[6] = (seconds / 10) + '0';
+  format_buf[7] = seconds % 10 + '0';
 
-  return time_format_buf;
+  return format_buf;
 }
 
 
@@ -65,7 +68,7 @@ char* time_as_string(uint time) {
     is%05 - начало суточного интервала по UTC+0
     ie%05 - окончание суточного интервала по UTC+0
  */
-END_STATUS deformat_dai(
+uint deformat_dai(
   const char* data,
   char*  dd,
   uint* ctb,
@@ -100,6 +103,46 @@ END_STATUS deformat_dai(
   *ctb = atoi(ctbs);
   *isb = atoi(isbs);
   *ieb = atoi(iebs);
+
+  return END_OK;
+}
+
+
+/*!
+  \brief      Увеличить длину строки
+
+  \param      str   Строка
+  \param[in]  len   Длина
+  \param[in]  ch    Символ, заполняющий сдвиг
+
+  \return     Статус завершения
+
+  Сдвигает строку направо до длины len и заполняет пустоту ch
+  \attention  Длина строки должна быть len+1
+ */
+uint upscalestrlen(char *str, uint len, char ch) {
+  uint i;
+  uint slen = strlen(str);
+  
+  /* Обработка исключений */
+  if (slen == len)
+    return END_OK;
+  if ((len <= 0) || (slen > len))
+    return END_NOT_OK;
+
+  /* Установка длины */
+  str[len] = '\0';
+
+  /* Вычисление смещения */
+  uint shift = len - slen;
+
+  /* Смещение справа - налево */
+  for (i = slen; i > 0; i--)
+    str[i + shift - 1] = str[i - 1];
+
+  /* Заполнение пустоты */
+  for (i = 0; i < shift; i++)
+    str[i] = ch;
 
   return END_OK;
 }
@@ -155,40 +198,48 @@ char* current_settings() {
 
 
 /*!
-  \brief      Увеличить длину строки
+  \brief      Данные датчика в формате передачи
 
-  \param      str   Строка
-  \param[in]  len   Длина
-  \param[in]  ch    Символ, заполняющий сдвиг
+  \param[in]  adr   Адрес
+  \param[in]  data  Данные
 
-  \return     Статус завершения
+  \return     Возвращает строку в формате <Адрес датчика> <Время> <Данные>
 
-  Сдвигает строку направо до длины len и заполняет пустоту ch
-  \attention  Длина строки должна быть len+1
+  Возвращает строку по протоколу передачи данных датчиков
+    3 символа - адрес датчика
+    10 символов - время передачи
+    10 символов - данные датчика
  */
-END_STATUS upscalestrlen(char *str, uint len, char ch) {
+char* sensor_data(uint adr, uint data) {
   uint i;
-  uint slen = strlen(str);
-  
-  /* Обработка исключений */
-  if (slen == len)
-    return END_OK;
-  if ((len <= 0) || (slen > len))
-    return END_NOT_OK;
+  char adrs[4], times[11], datas[11];
 
-  /* Установка длины */
-  str[len] = '\0';
+  /* Заполнение окончания строки */
+  sensor_format_string_buf[26] = '\0';
+  sensor_format_string_buf[25] = '\n';
 
-  /* Вычисление смещения */
-  uint shift = len - slen;
+  /* Заполнение пробелов */
+  sensor_format_string_buf[4] = 
+  sensor_format_string_buf[15] = ' ';
 
-  /* Смещение справа - налево */
-  for (i = slen; i > 0; i--)
-    str[i + shift - 1] = str[i - 1];
+ /* Заполнение строковых буферов */
+  itoa(adr, adrs, 16);
+  itoa(current_time, times, 10);
+  itoa(data, datas, 10);
 
-  /* Заполнение пустоты */
-  for (i = 0; i < shift; i++)
-    str[i] = ch;
+  /* Подстановка под формат */
+  upscalestrlen(adrs, 3, '0');
+  upscalestrlen(times, 10, '0');
+  upscalestrlen(datas, 10, '0');
 
-  return END_OK;
+  /* Заполнение данных */
+  for (i = 0; i < 10; i++) {
+    sensor_format_string_buf[5 + i] = times[i];
+    sensor_format_string_buf[16 + i] = datas[i];
+    if (i < 3) {
+      sensor_format_string_buf[i] = adrs[i];
+    }
+  }
+
+  return sensor_format_string_buf;
 }

@@ -11,6 +11,7 @@
 /// \todo Сделать возможность управлять более, чем 4 датчиками
 /// \todo Сделать отображение времени в диагностичесм режиме в реальном времени
 /// \todo Перевести весь проект в utf8
+/// \todo Сделать CAN не только в режиме самотестирования
 
 
 /*!
@@ -23,12 +24,9 @@ int main(void) {
   // Инициализация с проверкой результата
   if(init() != END_OK) return END_ERROR;
 
-  // Контрольная точка USB и времени
-  // time_controll();
-
   /* Бесконечный цикл */
   while(1) {
-       // ^= 1;
+      // Задержка
       delay(1000);
 
       // Контрольная точка USB и времени
@@ -45,9 +43,9 @@ int main(void) {
 
   Содержит функции инициализации и определение успешности инициализации
  */
-END_STATUS init(void) {
+uint init(void) {
   /* Трюк описания проверки успешности запуска каждого модуля */
-  END_STATUS init_status = END_OK;
+  uint init_status = END_OK;
   init_status += rst_clk_pll_init();
   init_status += time_init();
   init_status += delay_init();
@@ -55,6 +53,7 @@ END_STATUS init(void) {
   init_status += diagnostic_init();
   init_status += diagnostic_start_init();
   init_status += usb_init();
+  init_status += can_init();
 
   return init_status;
 }
@@ -67,7 +66,7 @@ END_STATUS init(void) {
 
   Содержит функции инициализации PLL
  */
-END_STATUS rst_clk_pll_init(void) {
+uint rst_clk_pll_init(void) {
   MDR_RST_CLK->HS_CONTROL = 0x00000001; // Включение HSE, режим осциллятора (8МГц)
   while((MDR_RST_CLK->CLOCK_STATUS&0x04) == 0x00); // Ожидание выхлда HSE в штатный режим
   MDR_EEPROM->CMD = 5<<3;
@@ -75,7 +74,7 @@ END_STATUS rst_clk_pll_init(void) {
   // Инициализация PLL
   /*!
     Выбираем в качестве источника опорного сигнала HSE (внешний) с делением на 1.
-    Умножаем входную частоту на 9 (8 МГц * 9 = 72 МГц)
+    Умножаем входную частоту на 8 (8 МГц * 9 = 72 МГц)
    */
   MDR_RST_CLK->PLL_CONTROL = (8<<8) | (1<<2); // Включение CPU_PLL к-та умножения
   while((MDR_RST_CLK->CLOCK_STATUS&0x02)==0x00); // Ожидание выхода CPU_PLL в штатный режим

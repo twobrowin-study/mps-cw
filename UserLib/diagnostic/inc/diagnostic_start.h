@@ -23,8 +23,8 @@
 #include "time.h"
 
 
-END_STATUS diagnostic_start_init(void);
-END_STATUS sel_butt_init(void);
+uint diagnostic_start_init(void);
+uint sel_butt_init(void);
 
 
 #endif // DIAGNOSTIC_START_H

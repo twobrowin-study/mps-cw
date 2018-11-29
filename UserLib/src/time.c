@@ -18,7 +18,7 @@
 
   Содержит инициализацию часов реального времени
  */
-END_STATUS time_init(void) {
+uint time_init(void) {
   // Включаем тактирование блока часов реального времни и сохранения состояния
   RST_CLK_PCLKcmd(RST_CLK_PCLK_BKP, ENABLE);
   
@@ -73,7 +73,7 @@ END_STATUS time_init(void) {
 
   Устанавливает предделитель часов реального времени (32,768 кГц / 32768 = 1Гц)
  */
-END_STATUS time_scale(void) {
+uint time_scale(void) {
   BKP_RTC_WaitForUpdate();
   BKP_RTC_SetPrescaler(32768);
   return END_OK;
@@ -88,7 +88,7 @@ END_STATUS time_scale(void) {
   Проверяет нобходимости обновления данных и обновляет - если необходимо
     Размер буфера данных соответсвует протоколу передачи - 26 символов (+ \0)
  */
-END_STATUS time_controll(void) {
+uint time_controll(void) {
   // Буфер данных
   char data[27];
   data[0] = '\0';
@@ -135,7 +135,7 @@ END_STATUS time_controll(void) {
 
   \return     Статус завершения
  */
-END_STATUS time_update(uint time, uint binterval_start, uint binterval_end) {
+uint time_update(uint time, uint binterval_start, uint binterval_end) {
   /* Отключение часов реального времени для обновления */
   // BKP_RTC_Enable(DISABLE);
   BKP_RTC_WaitForUpdate();

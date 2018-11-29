@@ -16,7 +16,7 @@
 
 #include "defs.h"
 #include "time.h"
-#include "time_format.h"
+#include "format.h"
 #include "cp1251_diagnostic_menu.h"
 #include "delay.h"
 
@@ -30,5 +30,6 @@
 
 void DiagnoseSettings(void);
 void DiagnoseServer(void);
+void SensorMenu(uint addr);
 
 #endif // CP1251_DIAGNOSTIC_MENU_ITEMS_H

@@ -21,7 +21,7 @@ static uint8_t recv_buf[MDR_USB_CDC_MAX_PACKET_SIZE] = "";
   
   Оганизация тактирования доп. блоков для работы USB и инициализация USB CDC
  */
-END_STATUS usb_init(void) {
+uint usb_init(void) {
   RST_CLK_PCLKcmd(
     RST_CLK_PCLK_RST_CLK |
     RST_CLK_PCLK_BKP |
@@ -48,7 +48,7 @@ END_STATUS usb_init(void) {
 
   Это контрольная точка, которая определяет далее работу со входом USB CDC
  */
-END_STATUS check_usb_cdc(void) {
+uint check_usb_cdc(void) {
   if(mdr_usb_cdc_is_recv_buf_setted() == MDR_USB_CDC_Fail)
     mdr_usb_cdc_set_recv_buf(recv_buf);
   return END_OK;
@@ -75,7 +75,7 @@ char* get_recv_via_usb_cdc(void) {
 
   Функция напрямую очищает 3 оконечную точку
  */
-END_STATUS clean_usb_cdc_recv_buf(void) {
+uint clean_usb_cdc_recv_buf(void) {
   strcpy((char*) recv_buf, "");
   uint8_t no_buf[MDR_USB_CDC_MAX_PACKET_SIZE] = "";
   if(mdr_usb_cdc_is_recv_buf_setted() == MDR_USB_CDC_Fail)
@@ -91,7 +91,7 @@ END_STATUS clean_usb_cdc_recv_buf(void) {
 
   \return     Результат завершения функции
  */
-END_STATUS send_via_usb_cdc(const char *str) {
+uint send_via_usb_cdc(const char *str) {
   if(mdr_usb_cdc_is_sending() == MDR_USB_CDC_Fail) {
     mdr_usb_cdc_send(strlen(str), (uint8_t*) str);
     return END_OK;

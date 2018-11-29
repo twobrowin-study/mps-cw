@@ -53,6 +53,7 @@ struct sMenu
 
 void MenuInit(void);
 void DisplayMenuTitle(const char *ptr);
+void DisplayMenuTitleInt(const char *ptr, uint val, uint scal);
 
 void DisplayMenuItemString(u32 y, const char *ptr);
 void DisplayMenuItemStringPrefix(u32 y, const char *prefix, const char *ptr);

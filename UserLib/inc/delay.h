@@ -15,7 +15,7 @@
 
 #include "defs.h"
 
-END_STATUS delay_init(void);
-END_STATUS delay(uint ms);
+uint delay_init(void);
+uint delay(uint ms);
 
 #endif // DELAY_H

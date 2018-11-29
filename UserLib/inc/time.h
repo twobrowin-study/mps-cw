@@ -16,7 +16,7 @@
 
 #include "defs.h"
 #include "usb.h"
-#include "time_format.h"
+#include "format.h"
 
 /// Текущее время
 #define current_time BKP_RTC_GetCounter()
@@ -27,9 +27,9 @@
 /// Величина пропорции времени суток в секундах
 #define day_proportion 86400
 
-END_STATUS time_init(void);
-END_STATUS time_scale(void);
-END_STATUS time_controll(void);
-END_STATUS time_update(uint time, uint binterval_start, uint binterval_end);
+uint time_init(void);
+uint time_scale(void);
+uint time_controll(void);
+uint time_update(uint time, uint binterval_start, uint binterval_end);
 
 #endif // TIME_H

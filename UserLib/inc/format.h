@@ -14,9 +14,13 @@
 
 #include "defs.h"
 #include "time.h"
+#include "can.h"
 
+/* Функции для вывода информации в меню тестирования */
 char* time_as_string(uint time);
-END_STATUS deformat_dai(
+
+/* Функции для разбора времени суток и интервалов */
+uint deformat_dai(
   const char* data,
   char*  dd,
   uint* ctb,
@@ -24,7 +28,10 @@ END_STATUS deformat_dai(
   uint* isb,
   char*  ie,
   uint* ieb);
+uint upscalestrlen(char *str, uint len, char ch);
+
+/* Функции для передачи по USB */
 char* current_settings();
-END_STATUS upscalestrlen(char *str, uint len, char ch);
+char* sensor_data(uint adr, uint data);
 
 #endif // TIME_FORMAT_H

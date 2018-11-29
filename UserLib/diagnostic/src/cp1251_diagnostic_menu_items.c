@@ -95,3 +95,32 @@ void DiagnoseServer(void) {
   /* Возвращение в меню по нажатию кнопки "Выбор" */
   BackToMenuOnSel();
 }
+
+
+void SensorMenu(uint addr) {
+  /* Выводим заглавие */
+  LCD_CLS();
+  CurrentMethod = MET_AND;
+  DisplayMenuTitleInt("Дигностика датчика ", addr, 10);
+  WAIT_UNTIL_KEY_RELEASED(SEL);
+
+  /* Получение данных от датчика */
+  uint data = 0;
+  get_sensor_data(addr, &data);
+
+  /* Вывод сообщения о принятии данных */
+  uint y = CurrentFont->Height + 4;
+  DisplayMenuItemString(y, "Принятые данные:");
+
+  /* Вывод данных датчика */
+  y += CurrentFont->Height + 2;
+  DisplayMenuItemString(y, sensor_data(addr, data));
+
+  /* Вывод сообщения о завершении диагностики */
+  y += CurrentFont->Height + 2;
+  DisplayMenuItemString(y, "Диагностика завершена");
+
+  /* Сообщение для пользователя */
+  y += CurrentFont->Height + 2;
+  DisplayMenuItemString(y, "Нажмите ВЫБОР");
+}
