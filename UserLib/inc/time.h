@@ -27,9 +27,9 @@
 /// Величина пропорции времени суток в секундах
 #define day_proportion 86400
 
-uint time_init(void);
-uint time_scale(void);
-uint time_controll(void);
-uint time_update(uint time, uint binterval_start, uint binterval_end);
+uint32_t time_init(void);
+uint32_t time_scale(void);
+uint32_t time_controll(void);
+uint32_t time_update(uint32_t time, uint32_t binterval_start, uint32_t binterval_end);
 
 #endif // TIME_H

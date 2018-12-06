@@ -30,6 +30,6 @@
 
 void DiagnoseSettings(void);
 void DiagnoseServer(void);
-void SensorMenu(uint addr);
+void SensorMenu(uint32_t addr);
 
 #endif // CP1251_DIAGNOSTIC_MENU_ITEMS_H

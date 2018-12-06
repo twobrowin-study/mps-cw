@@ -53,12 +53,12 @@ struct sMenu
 
 void MenuInit(void);
 void DisplayMenuTitle(const char *ptr);
-void DisplayMenuTitleInt(const char *ptr, uint val, uint scal);
+void DisplayMenuTitleInt(const char *ptr, uint32_t val, uint32_t scal);
 
 void DisplayMenuItemString(u32 y, const char *ptr);
 void DisplayMenuItemStringPrefix(u32 y, const char *prefix, const char *ptr);
-void DisplayMenuItemInt(u32 y, uint val, uint scal);
-void DisplayMenuItemIntPrefix(u32 y, const char *prefix, uint val, uint scal);
+void DisplayMenuItemInt(u32 y, uint32_t val, uint32_t scal);
+void DisplayMenuItemIntPrefix(u32 y, const char *prefix, uint32_t val, uint32_t scal);
 
 void DisplayMenu(void);
 void BackToMenuOnSel(void);

@@ -22,7 +22,7 @@
 #include "usb.h"
 #include "can.h"
 
-uint init(void);
-uint rst_clk_pll_init(void);
+uint32_t init(void);
+uint32_t rst_clk_pll_init(void);
 
 #endif // MAIN_H

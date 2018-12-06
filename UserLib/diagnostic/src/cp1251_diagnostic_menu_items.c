@@ -26,7 +26,7 @@ void DiagnoseSettings(void) {
 
   /* Вывод на экран всех настроек построчно */
   // Строка Текущее время
-  uint y = CurrentFont->Height + 4;
+  uint32_t y = CurrentFont->Height + 4;
   DisplayMenuItemStringPrefix(y, "Время: ", time_as_string(current_time % day_proportion));
 
   // Время начала интервала
@@ -59,7 +59,7 @@ void DiagnoseServer(void) {
   WAIT_UNTIL_KEY_RELEASED(SEL);
 
   /* Вывод строки о наличии подключения */
-  uint y = CurrentFont->Height + 4;
+  uint32_t y = CurrentFont->Height + 4;
   if (is_usb_connected()) { // Подключение установлено
     DisplayMenuItemString(y, "Связь установлена");
 
@@ -69,7 +69,7 @@ void DiagnoseServer(void) {
     DisplayMenuItemString(y, "Пакет отправлен");
 
     /* Вывод строки о получении ответа */
-    uint trys = 100; // Количество попыток получить пакет
+    uint32_t trys = 100; // Количество попыток получить пакет
     while ((time_controll() != END_OK) && (trys)) {
       trys -= 1;
       delay(10);
@@ -97,7 +97,7 @@ void DiagnoseServer(void) {
 }
 
 
-void SensorMenu(uint addr) {
+void SensorMenu(uint32_t addr) {
   /* Выводим заглавие */
   LCD_CLS();
   CurrentMethod = MET_AND;
@@ -105,11 +105,11 @@ void SensorMenu(uint addr) {
   WAIT_UNTIL_KEY_RELEASED(SEL);
 
   /* Получение данных от датчика */
-  uint data = 0;
+  uint32_t data = 0;
   get_sensor_data(addr, &data);
 
   /* Вывод сообщения о принятии данных */
-  uint y = CurrentFont->Height + 4;
+  uint32_t y = CurrentFont->Height + 4;
   DisplayMenuItemString(y, "Принятые данные:");
 
   /* Вывод данных датчика */
@@ -123,4 +123,7 @@ void SensorMenu(uint addr) {
   /* Сообщение для пользователя */
   y += CurrentFont->Height + 2;
   DisplayMenuItemString(y, "Нажмите ВЫБОР");
+
+  /* Возвращение в меню по нажатию кнопки "Выбор" */
+  BackToMenuOnSel();
 }

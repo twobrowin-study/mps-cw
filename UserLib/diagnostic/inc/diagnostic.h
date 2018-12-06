@@ -30,8 +30,8 @@
 #include "leds.h"
 
 
-uint diagnostic_init(void);
-uint diagnostic_release(void);
+uint32_t diagnostic_init(void);
+uint32_t diagnostic_release(void);
 
 
 #endif // DIAGNOSTIC_H

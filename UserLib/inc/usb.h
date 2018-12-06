@@ -27,11 +27,11 @@
 
 #include "defs.h"
 
-uint usb_init(void);
-uint check_usb_cdc(void);
+uint32_t usb_init(void);
+uint32_t check_usb_cdc(void);
 char* get_recv_via_usb_cdc(void);
-uint clean_usb_cdc_recv_buf(void);
-uint send_via_usb_cdc(const char *str);
-uint is_usb_connected(void);
+uint32_t clean_usb_cdc_recv_buf(void);
+uint32_t send_via_usb_cdc(const char *str);
+uint32_t is_usb_connected(void);
 
 #endif // USB_H

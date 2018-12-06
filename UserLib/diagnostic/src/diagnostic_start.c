@@ -21,7 +21,7 @@
     которого запускает диагностический режим.
     Настройка осуществляется для вызова обработчика прерывания 20 раз в секунду.
  */
-uint diagnostic_start_init(void) {
+uint32_t diagnostic_start_init(void) {
   TIMER_CntInitTypeDef timer_struct;
 
   RST_CLK_PCLKcmd(RST_CLK_PCLK_TIMER2, ENABLE);
@@ -63,7 +63,7 @@ uint diagnostic_start_init(void) {
 
   Содержит функции инициализации PC2 для обеспечения прослушивания кнопки "Выбор"
  */
-uint sel_butt_init(void) {
+uint32_t sel_butt_init(void) {
   RST_CLK_PCLKcmd (RST_CLK_PCLK_PORTC, ENABLE);
   PORT_InitTypeDef GPIOInitStruct;
   PORT_StructInit(&GPIOInitStruct);

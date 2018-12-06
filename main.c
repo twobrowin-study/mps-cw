@@ -43,9 +43,9 @@ int main(void) {
 
   Содержит функции инициализации и определение успешности инициализации
  */
-uint init(void) {
+uint32_t init(void) {
   /* Трюк описания проверки успешности запуска каждого модуля */
-  uint init_status = END_OK;
+  uint32_t init_status = END_OK;
   init_status += rst_clk_pll_init();
   init_status += time_init();
   init_status += delay_init();
@@ -66,7 +66,7 @@ uint init(void) {
 
   Содержит функции инициализации PLL
  */
-uint rst_clk_pll_init(void) {
+uint32_t rst_clk_pll_init(void) {
   MDR_RST_CLK->HS_CONTROL = 0x00000001; // Включение HSE, режим осциллятора (8МГц)
   while((MDR_RST_CLK->CLOCK_STATUS&0x04) == 0x00); // Ожидание выхлда HSE в штатный режим
   MDR_EEPROM->CMD = 5<<3;

@@ -9,10 +9,6 @@
 #ifndef DEFS_H
 #define DEFS_H
 
-/// Определение типа uint
-/// \details Тип беззнакового целого 32-х битного числа
-typedef unsigned int uint;
-
 /// Перечисляемый тип статуса завершения работы вызываемой функции
 /// \details Используется как возвращаемый тип вместо void
 enum END_STATUS_ENUM {

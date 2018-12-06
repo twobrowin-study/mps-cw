@@ -16,7 +16,7 @@
   Содержит инизиализацию портов, обеспечивающийх работу меню и очищение экрана
     (вызывать следует при инициализации устройства!)
  */
-uint diagnostic_init(void) {
+uint32_t diagnostic_init(void) {
   // Включение тактирования необходимых для диагностичекого режима портов
   RST_CLK_PCLKcmd(RST_CLK_PCLK_PORTA | RST_CLK_PCLK_PORTB | RST_CLK_PCLK_PORTC
                   | RST_CLK_PCLK_PORTE | RST_CLK_PCLK_PORTF,
@@ -38,7 +38,7 @@ uint diagnostic_init(void) {
 
   Содержит выполнение графа состояний меню диагностического режима
  */
-uint diagnostic_release(void) {
+uint32_t diagnostic_release(void) {
   DisplayMenu();
   ReadKey();
   return END_OK;

@@ -258,7 +258,7 @@ void DisplayMenuTitle(const char *ptr) {
 /*!
   \bref Вывести название меню с числом
  */
-void DisplayMenuTitleInt(const char *ptr, uint val, uint scal) {
+void DisplayMenuTitleInt(const char *ptr, uint32_t val, uint32_t scal) {
     char buf[22] = "";
     char buffer_s[21];
 
@@ -303,7 +303,7 @@ void DisplayMenuItemStringPrefix(u32 y, const char *prefix, const char *ptr) {
 /*!
   \bref Вывести целое число на дисплей
  */
-void DisplayMenuItemInt(u32 y, uint val, uint scal) {
+void DisplayMenuItemInt(u32 y, uint32_t val, uint32_t scal) {
     char buffer_s[21];
     itoa(val, buffer_s, scal);
     DisplayMenuItemString(y, buffer_s);
@@ -313,7 +313,7 @@ void DisplayMenuItemInt(u32 y, uint val, uint scal) {
 /*!
   \bref Вывести целое число на дисплей с префиксом
  */
-void DisplayMenuItemIntPrefix(u32 y, const char *prefix, uint val, uint scal) {
+void DisplayMenuItemIntPrefix(u32 y, const char *prefix, uint32_t val, uint32_t scal) {
     char buffer_s[21] = "\0";
     itoa(val, buffer_s, scal);
     DisplayMenuItemStringPrefix(y, prefix, buffer_s);

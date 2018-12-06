@@ -17,21 +17,21 @@
 #include "can.h"
 
 /* Функции для вывода информации в меню тестирования */
-char* time_as_string(uint time);
+char* time_as_string(uint32_t time);
 
 /* Функции для разбора времени суток и интервалов */
-uint deformat_dai(
+uint32_t deformat_dai(
   const char* data,
   char*  dd,
-  uint* ctb,
+  uint32_t* ctb,
   char*  is,
-  uint* isb,
+  uint32_t* isb,
   char*  ie,
-  uint* ieb);
-uint upscalestrlen(char *str, uint len, char ch);
+  uint32_t* ieb);
+uint32_t upscalestrlen(char *str, uint32_t len, char ch);
 
 /* Функции для передачи по USB */
 char* current_settings();
-char* sensor_data(uint adr, uint data);
+char* sensor_data(uint32_t adr, uint32_t data);
 
 #endif // TIME_FORMAT_H

@@ -25,13 +25,13 @@ static char sensor_format_string_buf [27] = "";
 
   Преобразует время из числа 3-х битного целого ко строке стандартного формата РФ
  */
-char* time_as_string(uint time) {
+char* time_as_string(uint32_t time) {
   // Количество часов (3600 секунд в часу)
-  uint hours = time / 3600;
+  uint32_t hours = time / 3600;
   // Количество минут (60 секунд в минуте (первым делением уберём секунды) и 60 минут в часу)
-  uint minutes = (time / 60) % 60;
+  uint32_t minutes = (time / 60) % 60;
   // Количество секунд (60 секунд в минуте)
-  uint seconds = time % 60;
+  uint32_t seconds = time % 60;
 
   /* Заполним шаблон */
   format_buf[8] = '\0';
@@ -68,16 +68,16 @@ char* time_as_string(uint time) {
     is%05 - начало суточного интервала по UTC+0
     ie%05 - окончание суточного интервала по UTC+0
  */
-uint deformat_dai(
+uint32_t deformat_dai(
   const char* data,
   char*  dd,
-  uint* ctb,
+  uint32_t* ctb,
   char*  is,
-  uint* isb,
+  uint32_t* isb,
   char*  ie,
-  uint* ieb) {
+  uint32_t* ieb) {
   /* Начало функции */
-  uint i;
+  uint32_t i;
   
   /* Инициализация строковых буферов */
   char ctbs[11], isbs[6], iebs[6];
@@ -120,9 +120,9 @@ uint deformat_dai(
   Сдвигает строку направо до длины len и заполняет пустоту ch
   \attention  Длина строки должна быть len+1
  */
-uint upscalestrlen(char *str, uint len, char ch) {
-  uint i;
-  uint slen = strlen(str);
+uint32_t upscalestrlen(char *str, uint32_t len, char ch) {
+  uint32_t i;
+  uint32_t slen = strlen(str);
   
   /* Обработка исключений */
   if (slen == len)
@@ -134,7 +134,7 @@ uint upscalestrlen(char *str, uint len, char ch) {
   str[len] = '\0';
 
   /* Вычисление смещения */
-  uint shift = len - slen;
+  uint32_t shift = len - slen;
 
   /* Смещение справа - налево */
   for (i = slen; i > 0; i--)
@@ -159,7 +159,7 @@ uint upscalestrlen(char *str, uint len, char ch) {
     ie%05 - окончание суточного интервала по UTC+0
  */
 char* current_settings() {
-  uint i;
+  uint32_t i;
   char ctbs[11], isbs[6], iebs[6];
 
   /* Заполнение окончания строки */
@@ -207,35 +207,35 @@ char* current_settings() {
 
   Возвращает строку по протоколу передачи данных датчиков
     3 символа - адрес датчика
-    10 символов - время передачи
-    10 символов - данные датчика
+    8 символов - время передачи
+    8 символов - данные датчика
  */
-char* sensor_data(uint adr, uint data) {
-  uint i;
-  char adrs[4], times[11], datas[11];
+char* sensor_data(uint32_t adr, uint32_t data) {
+  uint32_t i;
+  char adrs[5], *times, datas[11];
 
   /* Заполнение окончания строки */
-  sensor_format_string_buf[26] = '\0';
-  sensor_format_string_buf[25] = '\n';
+  sensor_format_string_buf[25] = '\0';
 
   /* Заполнение пробелов */
   sensor_format_string_buf[4] = 
-  sensor_format_string_buf[15] = ' ';
+  sensor_format_string_buf[13] = ' ';
 
  /* Заполнение строковых буферов */
   itoa(adr, adrs, 16);
-  itoa(current_time, times, 10);
-  itoa(data, datas, 10);
+  times = time_as_string(current_time % day_proportion);
+  itoa(data, datas, 16);
+  datas[8] =
+  adrs[1] = '\0';
 
   /* Подстановка под формат */
   upscalestrlen(adrs, 3, '0');
-  upscalestrlen(times, 10, '0');
-  upscalestrlen(datas, 10, '0');
+  upscalestrlen(datas, 8, '0');
 
   /* Заполнение данных */
-  for (i = 0; i < 10; i++) {
+  for (i = 0; i < 8; i++) {
     sensor_format_string_buf[5 + i] = times[i];
-    sensor_format_string_buf[16 + i] = datas[i];
+    sensor_format_string_buf[14 + i] = datas[i];
     if (i < 3) {
       sensor_format_string_buf[i] = adrs[i];
     }

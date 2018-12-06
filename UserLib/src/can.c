@@ -10,7 +10,7 @@
 
 
 /* Внутренняя функция инициализации интерфейса */
-static uint can_initialize_if(uint can_init_type);
+static uint32_t can_initialize_if(uint32_t can_init_type);
 
 
 /*!
@@ -20,7 +20,7 @@ static uint can_initialize_if(uint can_init_type);
 
   \attention  Предполагается, что HCLK = 72 МГц
  */
-uint can_init(void) {
+uint32_t can_init(void) {
   /* Разрешение тактирования CAN1 и опорного порта A */
   RST_CLK_PCLKcmd((RST_CLK_PCLK_CAN1 | RST_CLK_PCLK_PORTA), ENABLE);
 
@@ -40,10 +40,10 @@ uint can_init(void) {
     return END_NOT_OK;
 
   /* Установ данных для передачи */
-  TxMsg.IDE     = CAN_ID_STD;
+  TxMsg.IDE     = CAN_ID_EXT;
   TxMsg.DLC     = 0x08;
   TxMsg.PRIOR_0 = DISABLE;
-  TxMsg.ID      = CAN_STDID_TO_EXTID(MC_CAN_ADDR);
+  TxMsg.ID      = MC_CAN_ADDR;
   TxMsg.Data[1] = current_time;
   TxMsg.Data[0] = 0x89ABCDEF;
 
@@ -62,10 +62,10 @@ uint can_init(void) {
     i++;
 
   /* Чтение полченных данных из буфера */
-  CAN_GetRawReceivedData(MDR_CAN1, CAN_RX_BUF, &RxMsg);
+  CAN_GetRawReceivedData(MDR_CAN1, CAN_ST_RX_BUF, &RxMsg);
 
   /* Освобождение буфера приёма и отключение CAN1 */
-  CAN_ITClearRxTxPendingBit(MDR_CAN1, CAN_RX_BUF, CAN_STATUS_RX_READY);
+  CAN_ITClearRxTxPendingBit(MDR_CAN1, CAN_ST_RX_BUF, CAN_STATUS_RX_READY);
   CAN_Cmd(MDR_CAN1, DISABLE);
 
   /* Проверка заголовков принятого пакета */
@@ -73,7 +73,7 @@ uint can_init(void) {
     return END_NOT_OK;
   if(RxMsg.Rx_Header.DLC != TxMsg.DLC)
     return END_NOT_OK;
-  if(CAN_EXTID_TO_STDID(RxMsg.Rx_Header.ID) != MC_CAN_ADDR)
+  if(RxMsg.Rx_Header.ID != MC_CAN_ADDR)
     return END_NOT_OK;
   if(RxMsg.Data[1] != TxMsg.Data[1])
     return END_NOT_OK;
@@ -82,13 +82,35 @@ uint can_init(void) {
 
   /* Самотестирование успешно пройдено! */
 
-  /* ****************
-   * Самотестирование
-   * ****************
+  /* ******************************
+   * Нормальная инициализация CAN1
+   * ******************************
   */
+  PORT_InitTypeDef PORTA_InitStructure;
+
+  /********************************
+   * Инициализация настроек PORTA 
+   ********************************
+   */
+
+  /* Конфигурация контакта 6 PORTA для приёма от CAN1 */
+  PORTA_InitStructure.PORT_FUNC  = PORT_FUNC_ALTER;
+  PORTA_InitStructure.PORT_Pin   = PORT_Pin_6;
+  PORTA_InitStructure.PORT_OE    = PORT_OE_OUT;
+  PORTA_InitStructure.PORT_MODE  = PORT_MODE_DIGITAL;
+  PORTA_InitStructure.PORT_SPEED = PORT_SPEED_MAXFAST;
+  PORT_Init(MDR_PORTA, &PORTA_InitStructure);
+
+  /* Конфигурация контакта 7 PORTA для передачи к CAN1 */
+  PORTA_InitStructure.PORT_FUNC  = PORT_FUNC_ALTER;
+  PORTA_InitStructure.PORT_Pin   = PORT_Pin_7;
+  PORTA_InitStructure.PORT_OE    = PORT_OE_IN;
+  PORTA_InitStructure.PORT_MODE  = PORT_MODE_DIGITAL;
+  PORTA_InitStructure.PORT_SPEED = PORT_SPEED_MAXFAST;
+  PORT_Init(MDR_PORTA, &PORTA_InitStructure);
 
   /* Инициализация интерфейса в нормальном режиме */
-  if (can_initialize_if(CAN_INIT_COMMON) != END_OK)
+  if (can_initialize_if(CAN_INIT_SELFTEST) != END_OK)
     return END_NOT_OK;
 
   return END_OK;
@@ -103,7 +125,7 @@ uint can_init(void) {
 
   \return     Результат выполнения
  */
-uint get_sensor_data(uint addr, uint* data) {
+uint32_t get_sensor_data(uint32_t addr, uint32_t* data) {
   uint32_t i = 0;
 
   /* Проверка существования адреса датчика */
@@ -115,39 +137,35 @@ uint get_sensor_data(uint addr, uint* data) {
   CAN_RxMsgTypeDef RxMsg;
 
   /* Установ данных для передачи */
-  TxMsg.IDE     = CAN_ID_STD;
+  TxMsg.IDE     = CAN_ID_EXT;
   TxMsg.DLC     = 0x08;
   TxMsg.PRIOR_0 = DISABLE;
-  TxMsg.ID      = CAN_STDID_TO_EXTID(MC_CAN_ADDR);
-  TxMsg.Data[1] = CAN_SENSOR_ADDR(addr);
-  TxMsg.Data[0] = current_time; // Текущее время передаётся согласно протоколу
+  TxMsg.ID      = addr;
+  TxMsg.Data[1] = 0;
+  TxMsg.Data[0] = 0;//current_time; // Текущее время передаётся согласно протоколу
 
   /* Передача */
   CAN_Transmit(MDR_CAN1, CAN_TX_BUF, &TxMsg);
 
-  /* Ожидание окончания передачи */
-  i = 0;
-  while(((CAN_GetStatus(MDR_CAN1) & CAN_STATUS_TX_READY) != RESET) && (i != 0xFFF))
-    i++;
-  CAN_ITClearRxTxPendingBit(MDR_CAN1, CAN_TX_BUF, CAN_STATUS_TX_READY);
+  // /* Ожидание окончания передачи */
+  // i = 0;
+  // while(((CAN_GetStatus(MDR_CAN1) & CAN_STATUS_TX_READY) != RESET) && (i != 0xFFF))
+  //   i++;
+  // CAN_ITClearRxTxPendingBit(MDR_CAN1, CAN_TX_BUF, CAN_STATUS_TX_READY);
 
-  /* Ожидание приёма */
-  i = 0;
-  while(((CAN_GetStatus(MDR_CAN1) & CAN_STATUS_RX_READY) == RESET) && (i != 0xFFF))
-    i++;
+  // /* Ожидание приёма */
+  // i = 0;
+  // while(((CAN_GetStatus(MDR_CAN1) & CAN_STATUS_RX_READY) == RESET) && (i != 0xFFF))
+  //   i++;
 
   /* Чтение полченных данных из буфера */
-  CAN_GetRawReceivedData(MDR_CAN1, CAN_RX_BUF, &RxMsg);
+  CAN_GetRawReceivedData(MDR_CAN1, addr, &RxMsg);
 
   /* Освобождение буфера приёма и отключение CAN1 */
-  CAN_ITClearRxTxPendingBit(MDR_CAN1, CAN_RX_BUF, CAN_STATUS_RX_READY);
+  CAN_ITClearRxTxPendingBit(MDR_CAN1, addr, CAN_STATUS_RX_READY);
 
   /* Возврат данных */
-  // *data = RxMsg.Data[0]
-  /* Удалить! */
-  if ((RxMsg.Data[0] == TxMsg.Data[0]) &&
-      (RxMsg.Data[1] == TxMsg.Data[1]))
-    *data = RxMsg.Data[0] << 4 | RxMsg.Data[1];
+  *data = RxMsg.Rx_Header.ID;
 
   return END_OK;
 }
@@ -164,7 +182,7 @@ uint get_sensor_data(uint addr, uint* data) {
 
   Скорость = 72 МГц / ((BRP+1) * (PSEG + CAN_SEG1 + CAN_SEG2 + 1))
  */
-uint can_initialize_if(uint can_init_type) {
+uint32_t can_initialize_if(uint32_t can_init_type) {
   CAN_InitTypeDef  sCAN;
   CAN_FilterInitTypeDef sFilter;
 
@@ -177,15 +195,15 @@ uint can_initialize_if(uint can_init_type) {
   /* Настройка на необходимый режим */
   sCAN.CAN_ROP  = 
   sCAN.CAN_SAP  = 
-  sCAN.CAN_STM  = ENABLE; // can_init_type == CAN_INIT_SELFTEST ? ENABLE : DISABLE;
+  sCAN.CAN_STM  = can_init_type == CAN_INIT_SELFTEST ? ENABLE : DISABLE;
 
   /* Настройка скорости рабты передатчика */
   sCAN.CAN_ROM  = DISABLE;
-  sCAN.CAN_PSEG = CAN_PSEG_Mul_1TQ;
-  sCAN.CAN_SEG1 = CAN_SEG1_Mul_1TQ;
-  sCAN.CAN_SEG2 = CAN_SEG2_Mul_1TQ;
-  sCAN.CAN_SJW  = CAN_SJW_Mul_4TQ;
-  sCAN.CAN_SB   = CAN_SB_3_SAMPLE;
+  sCAN.CAN_PSEG = CAN_PSEG_Mul_2TQ;
+  sCAN.CAN_SEG1 = CAN_SEG1_Mul_3TQ;
+  sCAN.CAN_SEG2 = CAN_SEG2_Mul_4TQ;
+  sCAN.CAN_SJW  = CAN_SJW_Mul_1TQ;
+  sCAN.CAN_SB   = CAN_SB_1_SAMPLE;
   sCAN.CAN_BRP  = 71;
   
   /* Инициализация CAN1 и включение его работы */
@@ -196,33 +214,36 @@ uint can_initialize_if(uint can_init_type) {
   CAN_ITConfig( MDR_CAN1, CAN_IT_GLBINTEN | CAN_IT_RXINTEN | CAN_IT_TXINTEN |
                 CAN_IT_ERRINTEN | CAN_IT_ERROVERINTEN, DISABLE);
 
-  /* Включение прерывания CAN1 от принимающего буфера */
-  CAN_RxITConfig( MDR_CAN1 ,(1<<CAN_RX_BUF), ENABLE);
+  /* Включение передающего буфера CAN1 */
+  CAN_TxITConfig( MDR_CAN1, (1<<CAN_TX_BUF), ENABLE);
 
-  /* Включение прерывания CAN1 от передающего буфера */
-  CAN_TxITConfig( MDR_CAN1 ,(1<<CAN_TX_BUF), ENABLE);
-
-  /* Включение принимающего буфера */
-  CAN_Receive(MDR_CAN1, CAN_RX_BUF, DISABLE);
-
-  /* Инициализация  фильтра */
-  if (can_init_type == CAN_INIT_SELFTEST) {
-    sFilter.Mask_ID = CAN_STDID_TO_EXTID(CAN_ID_STD);
-    sFilter.Filter_ID = CAN_STDID_TO_EXTID(CAN_ID_STD);
-  }
-  else {
-    uint i;
-
-    /* Принцип работы фильтра заключается в получении 0 при пересечении со всеми нужными битами */
-    uint sensors_filter = 0;
-    for (i = 0; i < SENSORS_COUNT; i++)
-      sensors_filter |= CAN_SENSOR_ADDR(i);
-    sFilter.Mask_ID = CAN_STDID_TO_EXTID(sensors_filter);
-
-    sFilter.Filter_ID = 0;
-  }
-
-  CAN_FilterInit(MDR_CAN1, CAN_RX_BUF, &sFilter);
+  // if (can_init_type == CAN_INIT_SELFTEST) {
+  //   /* Включение принимающего буфера CAN1 */
+    CAN_RxITConfig( MDR_CAN1 ,(1<<CAN_ST_RX_BUF), ENABLE);
+    CAN_Receive(MDR_CAN1, CAN_ST_RX_BUF, DISABLE);
+  //   /* Включение принимающего буфера */
+    
+  //   /* Инициализация  фильтра */
+  //   sFilter.Mask_ID = CAN_STDID_TO_EXTID(CAN_ID_STD);
+  //   sFilter.Filter_ID = CAN_STDID_TO_EXTID(CAN_ID_STD);
+  //   CAN_FilterInit(MDR_CAN1, CAN_ST_RX_BUF, &sFilter);
+  // }
+  // // else {
+    uint32_t i;
+    /* Проход по всем датчикам */
+    for (i = 1; i <= SENSORS_COUNT; i++) {
+      /* Включение прерывания CAN1 от принимающего буфера */
+      CAN_RxITConfig( MDR_CAN1 ,(1<<i), ENABLE);
+      
+      /* Включение принимающего буфера */
+      CAN_Receive(MDR_CAN1, i, DISABLE);
+      
+      /* Инициализация  фильтра */
+      sFilter.Mask_ID = CAN_SENSOR_ADDR(i);
+      sFilter.Filter_ID = CAN_SENSOR_ADDR(i);
+      CAN_FilterInit(MDR_CAN1, i, &sFilter);
+    }
+  // }
 
   return END_OK;
 }

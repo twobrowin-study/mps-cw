@@ -15,7 +15,7 @@
 
 #include "defs.h"
 
-uint delay_init(void);
-uint delay(uint ms);
+uint32_t delay_init(void);
+uint32_t delay(uint32_t ms);
 
 #endif // DELAY_H
