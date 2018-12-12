@@ -2,7 +2,7 @@
 \file
   \bref Основной файл программы
   \author Дубровин Егор гр. ИУ6-72
-  \date Октябрь 2018 года
+  \date Октябрь-Декабрь 2018 года
 
   Файл содержит основной алгоритм программы и подпрограмму инициализации оборудования
  */
@@ -11,29 +11,67 @@
 /// \todo Сделать возможность управлять более, чем 4 датчиками
 /// \todo Сделать отображение времени в диагностичесм режиме в реальном времени
 /// \todo Перевести весь проект в utf8
-/// \todo Сделать CAN не только в режиме самотестирования
+/// \todo Сделать CAN
+/// \todo Изменить буфферы CAN
+
+
+/// Матрица данных датчиков
+static uint32_t sensors_data[SENSORS_BUF_LENGTH][SENSORS_COUNT];
+
+/// Номер активной строки матрицы данных датчиков (== -1 если буфер пуст)
+static int sensors_buf_row;
 
 
 /*!
   \bref Основная программа
-  \return 0
+  \return Результата выполнения
 
   Содержит вызов функции инициализации и основной алгоритм программы
  */
 int main(void) {
+  uint32_t i;
+  uint32_t current_time;
+  
   // Инициализация с проверкой результата
   if(init() != END_OK) return END_ERROR;
 
   /* Бесконечный цикл */
-  while(1) {
-      // Задержка
-      delay(1000);
+  while (1) {
+    // Контрольная точка USB
+    time_controll();
 
-      // Контрольная точка USB и времени
-      MDR_PORTC->RXTX = (MDR_PORTC->RXTX & 0xfffe) | ((time_controll() == END_OK) & 0x1);
+    // Задержка на 500мс
+    delay(500);
+
+    /* Выполнение проверок суточного интервала */
+    current_time = get_time_from_date(current_date);
+    if (
+        (current_time > interval_start) && // Проверка наступление нижней границы суточного интервала
+        (current_time <= interval_end) && // Проверка наступление верхней границы суточного интервала
+        (fifteen_minutes_proportion(current_time - interval_start) == 0) // Проверка начала 15-ти минутного интервала
+        ) {
+            // Включение светодиода в связи с проверкой датчиков
+            LED_ON(LED0);
+
+            /* Циклическое увеличение крайнего положения буфера данных датчиков */
+            sensors_buf_row++;
+            sensors_buf_row = sensors_buf_row == SENSORS_BUF_LENGTH ? 0 : sensors_buf_row;
+
+            /* Проход по всем датчикам в текущей строке буфера и получение данных от них */
+            for (i = 1; i <= SENSORS_COUNT; i++)
+              get_sensor_data(i, sensors_data[sensors_buf_row] + i - 1);
+
+            // Передача данных серверу
+            sensors_data_transmit();
+          }
+    else {
+      // Выключение светодиода
+      LED_OFF(LED0);
+    }
   }
 
-  return 0;
+  // Окончание программы
+  return END_OK;
 }
 
 
@@ -44,6 +82,19 @@ int main(void) {
   Содержит функции инициализации и определение успешности инициализации
  */
 uint32_t init(void) {
+  // Инициализация строки буфера данных датчиков как пустого
+  sensors_buf_row = -1;
+
+  /* Инициализация светодиодов для индикации процессов */
+  RST_CLK_PCLKcmd (RST_CLK_PCLK_PORTC, ENABLE);
+  PORT_InitTypeDef GPIOInitStruct;
+  PORT_StructInit(&GPIOInitStruct);
+  GPIOInitStruct.PORT_Pin        = PORT_Pin_0 | PORT_Pin_1;
+  GPIOInitStruct.PORT_OE         = PORT_OE_OUT;
+  GPIOInitStruct.PORT_SPEED      = PORT_SPEED_SLOW;
+  GPIOInitStruct.PORT_MODE       = PORT_MODE_DIGITAL;
+  PORT_Init(MDR_PORTC, &GPIOInitStruct);
+
   /* Трюк описания проверки успешности запуска каждого модуля */
   uint32_t init_status = END_OK;
   init_status += rst_clk_pll_init();
@@ -85,4 +136,42 @@ uint32_t rst_clk_pll_init(void) {
   SystemCoreClockUpdate();
 
   return END_OK;
+}
+
+
+/*!
+  \brief      Передача данных датчиков из буфера
+
+  \return     Статус завершения
+
+  Отправляет данные на сервер если есть подключение
+ */
+uint32_t sensors_data_transmit() {
+  uint32_t k, i;
+
+  /* Проверка наличия записей в буфере и подключения по USB */
+  if (sensors_buf_row != -1 && is_usb_connected()) {
+    /* Проход по всем строкам в буфере */
+    for (k = 0; k < sensors_buf_row + 1; k++) {
+      // Переключение светодиода обозначает передачу данных серверу
+      LED_TOGGLE(LED1);
+      
+      /* Проход по всем датчикам в строке и передача данных серверу */
+      for (i = 1; i <= SENSORS_COUNT; i++) {
+        send_via_usb_cdc(
+          sensor_data(i, sensors_data[k][i-1], SENSOR_FORMAT_MODE_USB)
+        );
+
+        // Ожадание 100мс
+        delay(100);
+      }
+    }
+    LED_OFF(LED1);
+
+    // Сброс буфера данных датчиков
+    sensors_buf_row = -1;
+    return END_OK;
+  }
+  else 
+    return END_GOOD;
 }

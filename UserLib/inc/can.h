@@ -23,10 +23,10 @@
 
 #ifdef SENSORS_COUNT
   /// Макрос адреса датчика
-  #define CAN_SENSOR_ADDR(a) ((a & 0xf)<<29)
+  #define CAN_SENSOR_ADDR(a) ((a&0xf)<<29)
 
   /// Макрос номера CAN буфера датчика
-  #define CAN_SENSOR_BUF(a) (a & 0x7)
+  #define CAN_SENSOR_BUF(a) (a&0x7)
   
   /// Макрос проверки существования адреса
   #define IS_CAN_SENSOR_ADDR(a) (SENSORS_COUNT >= a)
@@ -34,7 +34,7 @@
 
 /// Номера буферов CAN для приёма и передачи
 #define CAN_TX_BUF 0
-#define CAN_ST_RX_BUF 7
+#define CAN_ST_RX_BUF (SENSORS_COUNT+1)
 
 uint32_t can_init(void);
 uint32_t get_sensor_data(uint32_t addr, uint32_t* data);

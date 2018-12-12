@@ -10,7 +10,7 @@
  */
 #include "cp1251_diagnostic_menu_items.h"
 
- #include "usb.h"
+#include "usb.h"
 
 /*!
   \bref Вывести на дсплей текущие настройки МК
@@ -27,7 +27,7 @@ void DiagnoseSettings(void) {
   /* Вывод на экран всех настроек построчно */
   // Строка Текущее время
   uint32_t y = CurrentFont->Height + 4;
-  DisplayMenuItemStringPrefix(y, "Время: ", time_as_string(current_time % day_proportion));
+  DisplayMenuItemStringPrefix(y, "Время: ", time_as_string(get_time_from_date(current_date)));
 
   // Время начала интервала
   y += CurrentFont->Height + 2;
@@ -114,7 +114,7 @@ void SensorMenu(uint32_t addr) {
 
   /* Вывод данных датчика */
   y += CurrentFont->Height + 2;
-  DisplayMenuItemString(y, sensor_data(addr, data));
+  DisplayMenuItemString(y, sensor_data(addr, data, SENSOR_FORMAT_MODE_DIAGNOSTIC));
 
   /* Вывод сообщения о завершении диагностики */
   y += CurrentFont->Height + 2;

@@ -32,6 +32,6 @@ uint32_t upscalestrlen(char *str, uint32_t len, char ch);
 
 /* Функции для передачи по USB */
 char* current_settings();
-char* sensor_data(uint32_t adr, uint32_t data);
+char* sensor_data(uint32_t adr, uint32_t data, uint32_t mode);
 
 #endif // TIME_FORMAT_H

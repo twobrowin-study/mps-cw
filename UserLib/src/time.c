@@ -49,9 +49,9 @@ uint32_t time_init(void) {
     BKP_RTC_Reset(ENABLE);
     BKP_RTC_Reset(DISABLE);
 
-    // Устанавливаем инициализованные значения начала и конца суточного интервала
+    // Устанавливаем инициализованные значения начала и конца суточного интервала 00:00:00 - 23:59:59
     BKP_RTC_WaitForUpdate();
-    time_update(0, 0, day_proportion - 1);
+    time_update(0, 0, 0x1517f);
   }
 
   time_scale();

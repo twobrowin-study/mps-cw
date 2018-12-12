@@ -89,7 +89,6 @@ void Timer2_IRQHandler(void)
 	if (TIMER_GetITStatus(MDR_TIMER2, TIMER_STATUS_CNT_ARR) == SET)
   {
     TIMER_ClearITPendingBit(MDR_TIMER2, TIMER_STATUS_CNT_ARR);
-    MDR_PORTC->RXTX ^= 2;
     if( PORT_ReadInputDataBit (MDR_PORTC, PORT_Pin_2) == 0 ) {
       // Контрольная точка USB и времени до начала диагностики
       time_controll();

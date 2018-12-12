@@ -27,58 +27,58 @@ uint32_t can_init(void) {
   /*! Установ частоты синхронизации CAN1 равным HCLK */
   CAN_BRGInit(MDR_CAN1, CAN_HCLKdiv1);
 
-  /* ****************
-   * Самотестирование
-   * ****************
-  */
-  CAN_TxMsgTypeDef TxMsg;
-  CAN_RxMsgTypeDef RxMsg;
-  uint32_t i = 0;
+  // /* ****************
+  //  * Самотестирование
+  //  * ****************
+  // */
+  // CAN_TxMsgTypeDef TxMsg;
+  // CAN_RxMsgTypeDef RxMsg;
+  // uint32_t i = 0;
 
-  /* Инициализация интерфейса в режие самотестирования */
-  if (can_initialize_if(CAN_INIT_SELFTEST) != END_OK)
-    return END_NOT_OK;
+  // /* Инициализация интерфейса в режие самотестирования */
+  // if (can_initialize_if(CAN_INIT_SELFTEST) != END_OK)
+  //   return END_NOT_OK;
 
-  /* Установ данных для передачи */
-  TxMsg.IDE     = CAN_ID_EXT;
-  TxMsg.DLC     = 0x08;
-  TxMsg.PRIOR_0 = DISABLE;
-  TxMsg.ID      = MC_CAN_ADDR;
-  TxMsg.Data[1] = current_time;
-  TxMsg.Data[0] = 0x89ABCDEF;
+  // /* Установ данных для передачи */
+  // TxMsg.IDE     = CAN_ID_EXT;
+  // TxMsg.DLC     = 0x08;
+  // TxMsg.PRIOR_0 = DISABLE;
+  // TxMsg.ID      = MC_CAN_ADDR;
+  // TxMsg.Data[1] = current_date;
+  // TxMsg.Data[0] = 0x89ABCDEF;
 
-  /* Передача */
-  CAN_Transmit(MDR_CAN1, CAN_TX_BUF, &TxMsg);
+  // /* Передача */
+  // CAN_Transmit(MDR_CAN1, CAN_TX_BUF, &TxMsg);
 
-  /* Ожидание окончания передачи */
-  i = 0;
-  while(((CAN_GetStatus(MDR_CAN1) & CAN_STATUS_TX_READY) != RESET) && (i != 0xFFF))
-    i++;
-  CAN_ITClearRxTxPendingBit(MDR_CAN1, CAN_TX_BUF, CAN_STATUS_TX_READY);
+  // /* Ожидание окончания передачи */
+  // i = 0;
+  // while(((CAN_GetStatus(MDR_CAN1) & CAN_STATUS_TX_READY) != RESET) && (i != 0xFFF))
+  //   i++;
+  // CAN_ITClearRxTxPendingBit(MDR_CAN1, CAN_TX_BUF, CAN_STATUS_TX_READY);
 
-  /* Ожидание приёма */
-  i = 0;
-  while(((CAN_GetStatus(MDR_CAN1) & CAN_STATUS_RX_READY) == RESET) && (i != 0xFFF))
-    i++;
+  // /* Ожидание приёма */
+  // i = 0;
+  // while(((CAN_GetStatus(MDR_CAN1) & CAN_STATUS_RX_READY) == RESET) && (i != 0xFFF))
+  //   i++;
 
-  /* Чтение полченных данных из буфера */
-  CAN_GetRawReceivedData(MDR_CAN1, CAN_ST_RX_BUF, &RxMsg);
+  // /* Чтение полченных данных из буфера */
+  // CAN_GetRawReceivedData(MDR_CAN1, CAN_ST_RX_BUF, &RxMsg);
 
-  /* Освобождение буфера приёма и отключение CAN1 */
-  CAN_ITClearRxTxPendingBit(MDR_CAN1, CAN_ST_RX_BUF, CAN_STATUS_RX_READY);
-  CAN_Cmd(MDR_CAN1, DISABLE);
+  // /* Освобождение буфера приёма и отключение CAN1 */
+  // CAN_ITClearRxTxPendingBit(MDR_CAN1, CAN_ST_RX_BUF, CAN_STATUS_RX_READY);
+  // CAN_Cmd(MDR_CAN1, DISABLE);
 
-  /* Проверка заголовков принятого пакета */
-  if(RxMsg.Rx_Header.IDE != TxMsg.IDE)
-    return END_NOT_OK;
-  if(RxMsg.Rx_Header.DLC != TxMsg.DLC)
-    return END_NOT_OK;
-  if(RxMsg.Rx_Header.ID != MC_CAN_ADDR)
-    return END_NOT_OK;
-  if(RxMsg.Data[1] != TxMsg.Data[1])
-    return END_NOT_OK;
-  if(RxMsg.Data[0] != TxMsg.Data[0])
-    return END_NOT_OK;
+  // /* Проверка заголовков принятого пакета */
+  // if(RxMsg.Rx_Header.IDE != TxMsg.IDE)
+  //   return END_NOT_OK;
+  // if(RxMsg.Rx_Header.DLC != TxMsg.DLC)
+  //   return END_NOT_OK;
+  // if(RxMsg.Rx_Header.ID != MC_CAN_ADDR)
+  //   return END_NOT_OK;
+  // if(RxMsg.Data[1] != TxMsg.Data[1])
+  //   return END_NOT_OK;
+  // if(RxMsg.Data[0] != TxMsg.Data[0])
+  //   return END_NOT_OK;
 
   /* Самотестирование успешно пройдено! */
 
@@ -142,21 +142,21 @@ uint32_t get_sensor_data(uint32_t addr, uint32_t* data) {
   TxMsg.PRIOR_0 = DISABLE;
   TxMsg.ID      = addr;
   TxMsg.Data[1] = 0;
-  TxMsg.Data[0] = 0;//current_time; // Текущее время передаётся согласно протоколу
+  TxMsg.Data[0] = 0;//current_date; // Текущее время передаётся согласно протоколу
 
   /* Передача */
   CAN_Transmit(MDR_CAN1, CAN_TX_BUF, &TxMsg);
 
-  // /* Ожидание окончания передачи */
-  // i = 0;
-  // while(((CAN_GetStatus(MDR_CAN1) & CAN_STATUS_TX_READY) != RESET) && (i != 0xFFF))
-  //   i++;
-  // CAN_ITClearRxTxPendingBit(MDR_CAN1, CAN_TX_BUF, CAN_STATUS_TX_READY);
+  /* Ожидание окончания передачи */
+  i = 0;
+  while(((CAN_GetStatus(MDR_CAN1) & CAN_STATUS_TX_READY) != RESET) && (i != 0xFFF))
+    i++;
+  CAN_ITClearRxTxPendingBit(MDR_CAN1, CAN_TX_BUF, CAN_STATUS_TX_READY);
 
-  // /* Ожидание приёма */
-  // i = 0;
-  // while(((CAN_GetStatus(MDR_CAN1) & CAN_STATUS_RX_READY) == RESET) && (i != 0xFFF))
-  //   i++;
+  /* Ожидание приёма */
+  i = 0;
+  while(((CAN_GetStatus(MDR_CAN1) & CAN_STATUS_RX_READY) == RESET) && (i != 0xFFF))
+    i++;
 
   /* Чтение полченных данных из буфера */
   CAN_GetRawReceivedData(MDR_CAN1, addr, &RxMsg);

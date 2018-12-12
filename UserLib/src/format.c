@@ -15,7 +15,7 @@ static char format_buf[9] = "";
 static char current_settings_buf[28] = "";
 
 /// Буфер форматизации данных датчика
-static char sensor_format_string_buf [27] = "";
+static char sensor_format_string_buf [23] = "";
 
 
 /*!
@@ -175,7 +175,7 @@ char* current_settings() {
   current_settings_buf[20] = 'e';
 
   /* Заполнение строковых буферов */
-  itoa(current_time, ctbs, 10);
+  itoa(current_date, ctbs, 10);
   itoa(interval_start, isbs, 10);
   itoa(interval_end, iebs, 10);
 
@@ -210,20 +210,25 @@ char* current_settings() {
     8 символов - время передачи
     8 символов - данные датчика
  */
-char* sensor_data(uint32_t adr, uint32_t data) {
+char* sensor_data(uint32_t adr, uint32_t data, uint32_t mode) {
   uint32_t i;
-  char adrs[5], *times, datas[11];
+  char adrs[4], *times, datas[9];
 
-  /* Заполнение окончания строки */
-  sensor_format_string_buf[25] = '\0';
+  /* Заполнение окончания строки в зависимости от типа вызова */
+  if (mode == SENSOR_FORMAT_MODE_USB) {
+    sensor_format_string_buf[22] = '\0';
+    sensor_format_string_buf[21] = '\n';
+  }
+  else
+    sensor_format_string_buf[21] = '\0';
 
   /* Заполнение пробелов */
-  sensor_format_string_buf[4] = 
-  sensor_format_string_buf[13] = ' ';
+  sensor_format_string_buf[3] = 
+  sensor_format_string_buf[12] = ' ';
 
  /* Заполнение строковых буферов */
   itoa(adr, adrs, 16);
-  times = time_as_string(current_time % day_proportion);
+  times = time_as_string(get_time_from_date(current_date));
   itoa(data, datas, 16);
   datas[8] =
   adrs[1] = '\0';
@@ -234,8 +239,8 @@ char* sensor_data(uint32_t adr, uint32_t data) {
 
   /* Заполнение данных */
   for (i = 0; i < 8; i++) {
-    sensor_format_string_buf[5 + i] = times[i];
-    sensor_format_string_buf[14 + i] = datas[i];
+    sensor_format_string_buf[4 + i] = times[i];
+    sensor_format_string_buf[13 + i] = datas[i];
     if (i < 3) {
       sensor_format_string_buf[i] = adrs[i];
     }

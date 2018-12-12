@@ -19,13 +19,15 @@
 #include "format.h"
 
 /// Текущее время
-#define current_time BKP_RTC_GetCounter()
+#define current_date BKP_RTC_GetCounter()
 /// Начало суточного интервала
 #define interval_start MDR_BKP->REG_00
 /// Конец суточного интеравла
 #define interval_end MDR_BKP->REG_01
 /// Величина пропорции времени суток в секундах
-#define day_proportion 86400
+#define get_time_from_date(n) ((n) % 86400)
+/// Величина пропорции 15 минут в секундах
+#define fifteen_minutes_proportion(n) ((n) % 60)
 
 uint32_t time_init(void);
 uint32_t time_scale(void);
