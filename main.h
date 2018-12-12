@@ -27,11 +27,11 @@
 #define SENSORS_COUNT 6
 #endif
 
-/// Макрос переключение светодиода
+/// Макрос переключения светодиода
 #define LED_TOGGLE(Pin) (MDR_PORTC->RXTX ^= Pin)
 /// Макрос включения светодиода
 #define LED_ON(Pin) (MDR_PORTC->RXTX |= Pin)
-/// Макрос переключение светодиода
+/// Макрос выключения светодиода
 #define LED_OFF(Pin) (MDR_PORTC->RXTX &= ~Pin)
 
 /// Макрос светодиода 0
