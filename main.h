@@ -22,6 +22,11 @@
 #include "usb.h"
 #include "can.h"
 
+#ifndef SENSORS_COUNT
+/// Количество датчиков если не задано
+#define SENSORS_COUNT 6
+#endif
+
 /// Макрос переключение светодиода
 #define LED_TOGGLE(Pin) (MDR_PORTC->RXTX ^= Pin)
 /// Макрос включения светодиода
