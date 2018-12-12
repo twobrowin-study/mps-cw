@@ -27,7 +27,7 @@
 /// Величина пропорции времени суток в секундах
 #define get_time_from_date(n) ((n) % 86400)
 /// Величина пропорции 15 минут в секундах
-#define fifteen_minutes_proportion(n) ((n) % 60)
+#define fifteen_minutes_proportion(n) ((n) % 900)
 
 uint32_t time_init(void);
 uint32_t time_scale(void);
