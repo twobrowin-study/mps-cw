@@ -39,7 +39,6 @@
 /// Макрос светодиода 1
 #define LED1 PORT_Pin_1
 
-
 uint32_t init(void);
 uint32_t rst_clk_pll_init(void);
 uint32_t sensors_data_transmit(void);

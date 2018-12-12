@@ -14,6 +14,8 @@ static uint32_t sensors_data[SENSORS_BUF_LENGTH][SENSORS_COUNT];
 /// Номер активной строки матрицы данных датчиков (== -1 если буфер пуст)
 static int sensors_buf_row;
 
+/// Макрос очистки буфера
+#define clear_sensors_buf() (sensors_buf_row = -1)
 
 /*!
   \bref Основная программа
@@ -81,7 +83,7 @@ int main(void) {
  */
 uint32_t init(void) {
   // Инициализация строки буфера данных датчиков как пустого
-  sensors_buf_row = -1;
+  clear_sensors_buf();
 
   /* Инициализация светодиодов для индикации процессов */
   RST_CLK_PCLKcmd (RST_CLK_PCLK_PORTC, ENABLE);
@@ -172,7 +174,7 @@ uint32_t sensors_data_transmit() {
     LED_OFF(LED1);
 
     // Сброс буфера данных датчиков
-    sensors_buf_row = -1;
+    clear_sensors_buf();
     return END_OK;
   }
   else 
