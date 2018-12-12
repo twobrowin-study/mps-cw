@@ -63,6 +63,7 @@ Project {
       fileTags: ['ul']
     }
     Group {
+      condition: project.diagnostic // Условие - включение режима диагностики в сборку
       name: "user-lib-diagnostic"
       files: [
         project.userLibDiagnosticPathSrcPath + "diagnostic.c",
@@ -86,6 +87,7 @@ Project {
       fileTags: ['pl']
     }
     Group {
+      condition: project.diagnostic // Условие - включение режима диагностики в сборку
       name: "lcd-lib"
       files: [
         project.lcdLibPathsSrcPath + "gl.c",
@@ -121,10 +123,16 @@ Project {
         args.push("-Wunused")
         args.push("-DM3")
         args.push("-nostartfiles")
+        
         args.push("-D__START=main") // Указание исполняемую после начала функцию
         args.push("-D__CMCARM_DEMO__") // Указание для библиотеки LCDLib
         args.push("-DSENSORS_COUNT=" + project.sensorsCount) // Указание количества датчиков в сети
         args.push("-DSENSORS_BUF_LENGTH=" + project.sensorsBufLength) // Указание длины буфера датчиков
+        
+        /* Проверка включения диагностического режима в сборку */
+        if (project.diagnostic)
+          args.push("-DDIAGNOSTIC")
+        
         for(i in project.includePaths)
           args.push("-I" + project.includePaths[i])
         args.push("-c")

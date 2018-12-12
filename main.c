@@ -7,7 +7,6 @@
   Файл содержит основной алгоритм программы и подпрограмму инициализации оборудования
  */
 #include "main.h"
-/// \todo Сделать возможность удаления режима диагностики из поставки
 /// \todo Сделать возможность управлять более, чем 4 датчиками
 /// \todo Сделать отображение времени в диагностичесм режиме в реальном времени
 /// \todo Перевести весь проект в utf8
@@ -100,9 +99,14 @@ uint32_t init(void) {
   init_status += rst_clk_pll_init();
   init_status += time_init();
   init_status += delay_init();
+
+  /* Проверка наличия диагностического режима в поставке */
+  #ifdef DIAGNOSTIC
   init_status += sel_butt_init();
   init_status += diagnostic_init();
   init_status += diagnostic_start_init();
+  #endif
+  
   init_status += usb_init();
   init_status += can_init();
 
