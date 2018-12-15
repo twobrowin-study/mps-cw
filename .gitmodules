@@ -1,0 +1,3 @@
+[submodule "mdr32f9q2-std-per-lib"]
+	path = mdr32f9q2-std-per-lib
+	url = https://github.com/TwoBroWin/mdr32f9q2-std-per-lib
