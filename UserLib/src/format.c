@@ -202,6 +202,7 @@ char* current_settings() {
 
   \param[in]  adr   Адрес
   \param[in]  data  Данные
+  \param[in]  mode  Режим форматизации
 
   \return     Возвращает строку в формате <Адрес датчика> <Время> <Данные>
 
