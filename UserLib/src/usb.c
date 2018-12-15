@@ -72,8 +72,6 @@ char* get_recv_via_usb_cdc(void) {
   \brief      Очистка буфера USB CDC
 
   \return     Статус завершения
-
-  Функция напрямую очищает 3 оконечную точку
  */
 uint32_t clean_usb_cdc_recv_buf(void) {
   strcpy((char*) recv_buf, "");
