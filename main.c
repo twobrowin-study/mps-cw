@@ -46,7 +46,7 @@ int main(void) {
     /* Выполнение проверок суточного интервала */
     current_time = get_time_from_date(current_date);
     if (
-        (current_time > interval_start) && // Проверка наступление нижней границы суточного интервала
+        (current_time >= interval_start) && // Проверка наступление нижней границы суточного интервала
         (current_time <= interval_end) && // Проверка наступление верхней границы суточного интервала
         (n_proportion(current_time - interval_start) == 0) // Проверка начала 15-ти минутного интервала
         ) {
