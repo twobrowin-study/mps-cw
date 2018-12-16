@@ -48,7 +48,7 @@ int main(void) {
     if (
         (current_time > interval_start) && // Проверка наступление нижней границы суточного интервала
         (current_time <= interval_end) && // Проверка наступление верхней границы суточного интервала
-        (fifteen_minutes_proportion(current_time - interval_start) == 0) // Проверка начала 15-ти минутного интервала
+        (n_proportion(current_time - interval_start) == 0) // Проверка начала 15-ти минутного интервала
         ) {
             // Включение светодиода в связи с проверкой датчиков
             LED_ON(LED0);

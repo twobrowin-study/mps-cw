@@ -26,8 +26,12 @@
 #define interval_end MDR_BKP->REG_01
 /// Величина пропорции времени суток в секундах
 #define get_time_from_date(n) ((n) % 86400)
-/// Величина пропорции 15 минут в секундах
-#define fifteen_minutes_proportion(n) ((n) % 900)
+#ifndef NPROPORTION
+/// Значение пропорции n
+#define NPROPORTION 900
+#endif
+/// Величина пропорции n в секундах
+#define n_proportion(n) ((n) % NPROPORTION)
 
 uint32_t time_init(void);
 uint32_t time_scale(void);

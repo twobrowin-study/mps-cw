@@ -18,6 +18,7 @@ Project {
   property string lcdLibPathsFontsPath: lcdLibPath + "fonts/"
   property string sensorsCount: "4" // Количество датчиков в МК-сети
   property string sensorsBufLength: "32" // Размер буфера данных датчиков
+  property string nProportion: "30" // Значение пропорции n
   property bool sensors_selftest: true // Включение режима самотестирования датчиков в сборку
   property bool diagnostic: true // Включение режима диагностики в сборку
   property pathList includePaths: [
@@ -128,6 +129,7 @@ Project {
         args.push("-D__CMCARM_DEMO__") // Указание для библиотеки LCDLib
         args.push("-DSENSORS_COUNT=" + project.sensorsCount) // Указание количества датчиков в сети
         args.push("-DSENSORS_BUF_LENGTH=" + project.sensorsBufLength) // Указание длины буфера датчиков
+        args.push("-DNPROPORTION=" + project.nProportion) // Указание пропорции n
         
         /* Проверка включения самотестирования датчиков в сборку */
         if (project.sensors_selftest)
