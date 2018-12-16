@@ -208,7 +208,7 @@ uint32_t get_sensor_data(uint32_t addr, uint32_t* data) {
   CAN_ITClearRxTxPendingBit(MDR_CAN1, CAN_RX_BUF, CAN_STATUS_RX_READY);
 
   /* Возврат данных */
-  *data = RxMsg.Rx_Header.ID;//RxMsg.Data[0];
+  *data = RxMsg.Data[0];
 
   return END_OK;
 }
