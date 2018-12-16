@@ -206,15 +206,9 @@ uint32_t get_sensor_data(uint32_t addr, uint32_t* data) {
   /* Чтение полученных данных из буфера и его очистка */
   CAN_GetRawReceivedData(MDR_CAN1, CAN_RX_BUF, &RxMsg);
   CAN_ITClearRxTxPendingBit(MDR_CAN1, CAN_RX_BUF, CAN_STATUS_RX_READY);
-  
-  /* Возврат при неудачном приёме сообщения */
-  if (RxMsg.Rx_Header.ID != CAN_SENSOR_ADDR(addr)) {
-    *data = 0;
-    return END_NOT_OK;
-  }
 
   /* Возврат данных */
-  *data = RxMsg.Data[0];
+  *data = RxMsg.Rx_Header.ID;//RxMsg.Data[0];
 
   return END_OK;
 }
